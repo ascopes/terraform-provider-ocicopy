@@ -1,0 +1,19 @@
+site_name: Terraform Provider OCI Copy
+site_url: https://ascopes.github.io/terraform-provider-oci-copy
+site_author: ascopes
+site_description: >-
+  Preview for the Terraform Provider documentation.
+theme:
+  features:
+    - navigation.expand
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.tracking
+  name: material
+  palette:
+    accent: purple
+    primary: deep-purple
+    scheme: slate
+    toggle:
+      icon: material/brightness-4
+      name: Switch to light mode

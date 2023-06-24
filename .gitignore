@@ -19,3 +19,10 @@
 
 # Go workspace file
 go.work
+
+# Generated documentation files from tfplugindocs
+docs/
+# Generated HTML made by mkdocs from the docs/ dir
+site/
+# Python venv for the mkdocs Python wheel
+.venv/

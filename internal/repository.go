@@ -17,12 +17,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-func NewRepositoryResource(provider *OciCopyProvider) resource.Resource {
+func NewRepositoryResource(provider *ociCopyProvider) resource.Resource {
 	return &RepositoryResource{Provider: provider}
 }
 
 type RepositoryResource struct {
-	Provider *OciCopyProvider
+	Provider *ociCopyProvider
 }
 
 func (resource *RepositoryResource) Create(ctx context.Context, req resource.CreateRequest, res *resource.CreateResponse) {
@@ -34,7 +34,7 @@ func (resource *RepositoryResource) Create(ctx context.Context, req resource.Cre
 	}
 
 	// Generate the new ID.
-	plan.populateTags(ctx, resource.Provider.Registries, &res.Diagnostics)
+	plan.populateTags(ctx, resource.Provider.getRegistriesMapping(), &res.Diagnostics)
 	plan.populateId()
 
 	diags = res.State.Set(ctx, plan)
@@ -127,29 +127,23 @@ func (*RepositoryResource) Schema(_ context.Context, _ resource.SchemaRequest, r
 					},
 				},
 				Blocks: map[string]schema.Block{
-					"tags": schema.SetNestedBlock{
+					"tags": schema.SingleNestedBlock{
 						Description: "Provide a set of tag constraints to copy. You must provide at least one of these blocks",
-						NestedObject: schema.NestedBlockObject{
-							Attributes: map[string]schema.Attribute{
-								"values": schema.SetAttribute{
-									Description: "Collection of tags to copy",
-									ElementType: types.StringType,
-									Required:    true,
-									Validators: []validator.Set{
-										setvalidator.IsRequired(),
-										setvalidator.SizeAtLeast(1),
-									},
-								},
-								"digests": schema.MapAttribute{
-									Computed:    true,
-									Description: "Mapping of the tags to their expected digest values",
-									ElementType: types.StringType,
+						Attributes: map[string]schema.Attribute{
+							"values": schema.SetAttribute{
+								Description: "Collection of tags to copy",
+								ElementType: types.StringType,
+								Required:    true,
+								Validators: []validator.Set{
+									setvalidator.IsRequired(),
+									setvalidator.SizeAtLeast(1),
 								},
 							},
-						},
-						Validators: []validator.Set{
-							setvalidator.IsRequired(),
-							setvalidator.SizeAtLeast(1),
+							"digests": schema.MapAttribute{
+								Computed:    true,
+								Description: "Mapping of the tags to their expected digest values",
+								ElementType: types.StringType,
+							},
 						},
 					},
 				},
@@ -180,8 +174,8 @@ type repositoryModel struct {
 }
 
 type repositoryFromModel struct {
-	Name types.String          `tfsdk:"name" json:"name"`
-	Tags []repositoryTagsModel `tfsdk:"tags" json:"tags"`
+	Name types.String        `tfsdk:"name" json:"name"`
+	Tags repositoryTagsModel `tfsdk:"tags" json:"tags"`
 }
 
 type repositoryToModel struct {
@@ -198,29 +192,26 @@ type repositoryTagsModel struct {
 	Digests types.Map `tfsdk:"digests" json:"digests"`
 }
 
-func (repository *repositoryModel) populateTags(ctx context.Context, configuredRegistries registriesModel, diagnostics *diag.Diagnostics) {
-	for i, tags := range repository.From.Tags {
-		tagStrings := make([]string, len(tags.Values))
-		for j, tag := range tags.Values {
-			tagStrings[j] = tag.ValueString()
-		}
-
-		tagDigestMapping, apiErrors := determineDigestsForTags(
-			ctx,
-			repository.From.Name.ValueString(),
-			tagStrings,
-			configuredRegistries,
-		)
-
-		if processApiErrors(diagnostics, "Failed to fetch digests for tags", apiErrors...) {
-			// Fail later.
-			continue
-		}
-
-		serializableTagDigestMapping, diags := types.MapValueFrom(ctx, types.StringType, tagDigestMapping)
-		diagnostics.Append(diags...)
-		repository.From.Tags[i].Digests = serializableTagDigestMapping
+func (repository *repositoryModel) populateTags(ctx context.Context, registries map[string]registryModel, diagnostics *diag.Diagnostics) {
+	tagStrings := make([]string, len(repository.From.Tags.Values))
+	for j, tag := range repository.From.Tags.Values {
+		tagStrings[j] = tag.ValueString()
 	}
+
+	tagDigestMapping, apiErrors := determineDigestsForTags(
+		ctx,
+		repository.From.Name.ValueString(),
+		tagStrings,
+		registries,
+	)
+
+	if processApiErrors(diagnostics, "Failed to fetch digests for tags", apiErrors...) {
+		return
+	}
+
+	serializableTagDigestMapping, diags := types.MapValueFrom(ctx, types.StringType, tagDigestMapping)
+	diagnostics.Append(diags...)
+	repository.From.Tags.Digests = serializableTagDigestMapping
 }
 
 // Create a sentinel hash to use for the ID that is unique enough to used per resource

@@ -18,8 +18,8 @@ var (
 	providerConfig = dedent.Dedent(`
 		provider "ocicopy" {
 			registry {
-				registry_url = "123456789012.eu-west-2.dkr.ecr.amazonaws.com"
-				basic_auth {
+				url        = "123456789012.eu-west-2.dkr.ecr.amazonaws.com"
+				basic_auth = {
 					username = "AWS"
 					password = "ecr-token-1234"
 				}
@@ -48,7 +48,7 @@ func TestAccRepositoryResource_hello_world(t *testing.T) {
 			//Check: func(state *terraform.State) error {
 			//	panic(state.String())
 			//},
-			Check: resource.TestCheckResourceAttrSet("ocicopy_repository.hello_world", "from.tags.0.digests.latest"),
+			Check: resource.TestCheckResourceAttrSet("ocicopy_repository.hello_world", "from.tags.digests.latest"),
 		}},
 	})
 }

@@ -11,9 +11,8 @@ terraform {
 
 provider "ocicopy" {
   registry {
-    registry_url = data.aws_ecr_authorization_token.token.proxy_endpoint
-    
-    basic_auth {
+    url        = data.aws_ecr_authorization_token.token.proxy_endpoint
+    basic_auth = {
       username = data.aws_ecr_authorization_token.token.username
       password = data.aws_ecr_authorization_token.token.password
     }

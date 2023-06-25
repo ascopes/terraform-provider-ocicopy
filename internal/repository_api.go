@@ -7,15 +7,13 @@ import (
 	"github.com/google/go-containerregistry/pkg/v1/remote"
 )
 
-func determineDigestsForTags(ctx context.Context, repositoryName string, tags []string, registries registriesModel) (map[string]string, []apiError) {
-	configuredRegistries := registries.getRegistriesMapping()
-
+func determineDigestsForTags(ctx context.Context, repositoryName string, tags []string, registries map[string]registryModel) (map[string]string, []apiError) {
 	repository, apiErrors := parseRepository(repositoryName)
 	if apiErrors != nil {
 		return nil, apiErrors
 	}
 
-	puller, apiErrors := createPullerFor(repository.Registry.Name(), configuredRegistries)
+	puller, apiErrors := createPullerFor(repository.Registry.Name(), registries)
 	if apiErrors != nil {
 		return nil, apiErrors
 	}
@@ -31,15 +29,15 @@ func parseRepository(repositoryName string) (*name.Repository, []apiError) {
 	return &repository, nil
 }
 
-func createPullerFor(registry string, configuredRegistries registriesMapping) (*remote.Puller, []apiError) {
+func createPullerFor(registry string, registries map[string]registryModel) (*remote.Puller, []apiError) {
 	options := []remote.Option{
 		remote.WithJobs(15),
 	}
 
-	if configuredRegistry, ok := configuredRegistries[registry]; ok {
+	if configuredRegistry, ok := registries[registry]; ok {
 		options = append(
 			options,
-			remote.WithAuth(configuredRegistry.GetAuthenticator()),
+			remote.WithAuth(configuredRegistry.getAuthenticator()),
 		)
 	}
 

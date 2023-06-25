@@ -10,37 +10,46 @@ import (
 )
 
 func NewOciCopyProvider() provider.Provider {
-	return &OciCopyProvider{}
+	return &ociCopyProvider{}
 }
 
-type OciCopyProvider struct {
-	Registries registriesModel
+type ociCopyProvider struct {
+	Registries []registryModel
 }
 
-func (provider *OciCopyProvider) Configure(ctx context.Context, req provider.ConfigureRequest, _ *provider.ConfigureResponse) {
-	provider.Registries = registriesModel{}
-	req.Config.Get(ctx, provider.Registries)
+func (provider *ociCopyProvider) Configure(_ context.Context, _ provider.ConfigureRequest, _ *provider.ConfigureResponse) {
+	// Nothing to do here
 }
 
-func (*OciCopyProvider) DataSources(context.Context) []func() datasource.DataSource {
+func (*ociCopyProvider) DataSources(context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{}
 }
 
-func (*OciCopyProvider) Metadata(_ context.Context, _ provider.MetadataRequest, res *provider.MetadataResponse) {
+func (*ociCopyProvider) Metadata(_ context.Context, _ provider.MetadataRequest, res *provider.MetadataResponse) {
 	res.TypeName = "ocicopy"
 }
 
-func (provider *OciCopyProvider) Resources(context.Context) []func() resource.Resource {
+func (provider *ociCopyProvider) Resources(context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		func() resource.Resource { return NewRepositoryResource(provider) },
 	}
 }
 
-func (*OciCopyProvider) Schema(_ context.Context, _ provider.SchemaRequest, res *provider.SchemaResponse) {
+func (*ociCopyProvider) Schema(_ context.Context, _ provider.SchemaRequest, res *provider.SchemaResponse) {
 	res.Schema = schema.Schema{
 		Description: "Configuration and settings for this provider",
 		Blocks: map[string]schema.Block{
-			"registry": getRegistriesBlockSchema(),
+			"registry": getRegistryBlockSchema(),
 		},
 	}
+}
+
+func (provider ociCopyProvider) getRegistriesMapping() map[string]registryModel {
+	mapping := make(map[string]registryModel, len(provider.Registries))
+
+	for _, registry := range provider.Registries {
+		mapping[registry.Url.ValueString()] = registry
+	}
+
+	return mapping
 }

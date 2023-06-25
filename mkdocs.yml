@@ -5,6 +5,7 @@ site_description: >-
   Preview for the Terraform Provider documentation.
 theme:
   features:
+    - content.code.copy
     - navigation.expand
     - navigation.instant
     - navigation.instant.prefetch
@@ -17,3 +18,11 @@ theme:
     toggle:
       icon: material/brightness-4
       name: Switch to light mode
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences

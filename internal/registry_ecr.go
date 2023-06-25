@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-var _ RegistryModel = &BasicAuthRegistryModel{}
+var _ RegistryModel = &EcrRegistryModel{}
 
 type EcrRegistryModel struct {
 	RegistryUrl types.String `tfsdk:"registry_url"`

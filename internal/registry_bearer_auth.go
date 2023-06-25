@@ -8,18 +8,18 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-var _ RegistryModel = &BearerAuthRegistryModel{}
+var _ registryModel = &bearerAuthRegistryModel{}
 
-type BearerAuthRegistryModel struct {
+type bearerAuthRegistryModel struct {
 	RegistryUrl types.String `tfsdk:"registry_url"`
 	Token       types.String `tfsdk:"token"`
 }
 
-func (bearerAuth BearerAuthRegistryModel) GetAuthenticator() authn.Authenticator {
+func (bearerAuth bearerAuthRegistryModel) GetAuthenticator() authn.Authenticator {
 	return &authn.Bearer{Token: bearerAuth.Token.ValueString()}
 }
 
-func (bearerAuth BearerAuthRegistryModel) GetRegistryUrl() string {
+func (bearerAuth bearerAuthRegistryModel) GetRegistryUrl() string {
 	return bearerAuth.RegistryUrl.ValueString()
 }
 

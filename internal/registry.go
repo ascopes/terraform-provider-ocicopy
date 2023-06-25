@@ -4,7 +4,7 @@ import (
 	"github.com/google/go-containerregistry/pkg/authn"
 )
 
-type RegistryModel interface {
+type registryModel interface {
 	GetRegistryUrl() string
 	GetAuthenticator() authn.Authenticator
 }

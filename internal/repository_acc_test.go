@@ -18,26 +18,8 @@ var (
 	providerConfig = dedent.Dedent(`
 		provider "ocicopy" {
 			registries {
-				basic_auth {
-					registry_url = "my.registry.url/myregistrypath"
-					username     = "some_username"
-					password     = "some_password"
-				}
-				basic_auth {
-					registry_url = "my.registry.url/myregistrypath2"
-					username     = "some_username"
-					password     = "some_password"
-				}
-				bearer_auth {
-					registry_url = "my.registry.url/myregistrypath3"
-					token	     = "1a2b3c"
-				}
-				bearer_auth {
-					registry_url = "my.registry.url/myregistrypath3"
-					token	     = "1a2b3c"
-				}
 				ecr {
-					registry_url = "https://012345678910.dkr.ecr.eu-west-2.amazonaws.com"
+					registry_url = "123456789012.eu-west-2.dkr.ecr.amazonaws.com"
 					token	     = "ecr-token-1234"
 				}
 			}
@@ -45,16 +27,27 @@ var (
 	`)
 )
 
-func TestAccRepositoryResource_declare(t *testing.T) {
+func TestAccRepositoryResource_hello_world(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{{
 			Config: providerConfig + dedent.Dedent(`
 				resource "ocicopy_repository" "hello_world" {
-
+					from {
+						name = "docker.io/hello-world"
+						tags {
+							values = ["latest"]
+						}
+					}
+					to {
+						name = "123456789012.eu-west-2.dkr.ecr.amazonaws.com"
+					}
 				}
 			`),
-			Check: resource.ComposeAggregateTestCheckFunc(),
+			//Check: func(state *terraform.State) error {
+			//	panic(state.String())
+			//},
+			Check: resource.TestCheckResourceAttrSet("ocicopy_repository.hello_world", "from.tags.0.digests.latest"),
 		}},
 	})
 }

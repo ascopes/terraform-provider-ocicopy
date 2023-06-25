@@ -8,26 +8,26 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-var _ RegistryModel = &BasicAuthRegistryModel{}
+var _ registryModel = &basicAuthRegistryModel{}
 
-type BasicAuthRegistryModel struct {
+type basicAuthRegistryModel struct {
 	RegistryUrl types.String `tfsdk:"registry_url"`
 	Username    types.String `tfsdk:"username"`
 	Password    types.String `tfsdk:"password"`
 }
 
-func (basicAuth BasicAuthRegistryModel) GetAuthenticator() authn.Authenticator {
+func (basicAuth basicAuthRegistryModel) GetAuthenticator() authn.Authenticator {
 	return &authn.Basic{
 		Username: basicAuth.Username.ValueString(),
 		Password: basicAuth.Password.ValueString(),
 	}
 }
 
-func (basicAuth BasicAuthRegistryModel) GetRegistryUrl() string {
+func (basicAuth basicAuthRegistryModel) GetRegistryUrl() string {
 	return basicAuth.RegistryUrl.ValueString()
 }
 
-func GetBasicBlockSchema() schema.NestedBlockObject {
+func getBasicBlockSchema() schema.NestedBlockObject {
 	return schema.NestedBlockObject{
 		Attributes: map[string]schema.Attribute{
 			"registry_url": schema.StringAttribute{

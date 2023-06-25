@@ -8,21 +8,21 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-var _ RegistryModel = &EcrRegistryModel{}
+var _ registryModel = &ecrRegistryModel{}
 
-type EcrRegistryModel struct {
+type ecrRegistryModel struct {
 	RegistryUrl types.String `tfsdk:"registry_url"`
 	Token       types.String `tfsdk:"token"`
 }
 
-func (ecr EcrRegistryModel) GetAuthenticator() authn.Authenticator {
+func (ecr ecrRegistryModel) GetAuthenticator() authn.Authenticator {
 	return &authn.Basic{
 		Username: "AWS",
 		Password: ecr.Token.String(),
 	}
 }
 
-func (ecr EcrRegistryModel) GetRegistryUrl() string {
+func (ecr ecrRegistryModel) GetRegistryUrl() string {
 	return ecr.RegistryUrl.ValueString()
 }
 

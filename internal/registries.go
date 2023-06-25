@@ -4,28 +4,44 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 )
 
-type RegistriesModel struct {
-	BasicAuth  []BasicAuthRegistryModel  `tfsdk:"basic_auth"`
-	BearerAuth []BearerAuthRegistryModel `tfsdk:"bearer_auth"`
-	Ecr        []EcrRegistryModel        `tfsdk:"ecr"`
+type registriesModel struct {
+	BasicAuth  []basicAuthRegistryModel  `tfsdk:"basic_auth"`
+	BearerAuth []bearerAuthRegistryModel `tfsdk:"bearer_auth"`
+	Ecr        []ecrRegistryModel        `tfsdk:"ecr"`
 }
 
-func GetRegistriesBlockSchema() schema.SingleNestedBlock {
+type registriesMapping map[string]registryModel
+
+func getRegistriesBlockSchema() schema.SingleNestedBlock {
 	return schema.SingleNestedBlock{
-		Description: "Configure registries with authentication details.",
+		Description: "Configure registries with authentication details",
 		Blocks: map[string]schema.Block{
 			"basic_auth": schema.SetNestedBlock{
-				Description:  "Configure registries to authenticate using basic authentication credentials.",
-				NestedObject: GetBasicBlockSchema(),
+				Description:  "Configure registries to authenticate using basic authentication credentials",
+				NestedObject: getBasicBlockSchema(),
 			},
 			"bearer_auth": schema.SetNestedBlock{
-				Description:  "Configure registries to authenticate using bearer authentication credentials.",
+				Description:  "Configure registries to authenticate using bearer authentication credentials",
 				NestedObject: GetBearerBlockSchema(),
 			},
 			"ecr": schema.SetNestedBlock{
-				Description:  "Configure registries that are hosted on AWS ECR.",
+				Description:  "Configure registries that are hosted on Amazon ECR",
 				NestedObject: GetEcrBlockSchema(),
 			},
 		},
 	}
+}
+
+func (registries registriesModel) getRegistriesMapping() registriesMapping {
+	mapping := make(registriesMapping)
+	for _, registryModel := range registries.BasicAuth {
+		mapping[registryModel.GetRegistryUrl()] = registryModel
+	}
+	for _, registryModel := range registries.BearerAuth {
+		mapping[registryModel.GetRegistryUrl()] = registryModel
+	}
+	for _, registryModel := range registries.Ecr {
+		mapping[registryModel.GetRegistryUrl()] = registryModel
+	}
+	return mapping
 }

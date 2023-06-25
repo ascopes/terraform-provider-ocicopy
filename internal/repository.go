@@ -17,15 +17,15 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-func NewRepositoryResource(provider *ociCopyProvider) resource.Resource {
-	return &RepositoryResource{Provider: provider}
+func newRepositoryResource(provider *ociCopyProvider) resource.Resource {
+	return &repositoryResource{Provider: provider}
 }
 
-type RepositoryResource struct {
+type repositoryResource struct {
 	Provider *ociCopyProvider
 }
 
-func (resource *RepositoryResource) Create(ctx context.Context, req resource.CreateRequest, res *resource.CreateResponse) {
+func (resource *repositoryResource) Create(ctx context.Context, req resource.CreateRequest, res *resource.CreateResponse) {
 	plan := &repositoryModel{}
 	diags := req.Plan.Get(ctx, plan)
 	res.Diagnostics.Append(diags...)
@@ -44,7 +44,7 @@ func (resource *RepositoryResource) Create(ctx context.Context, req resource.Cre
 	}
 }
 
-func (resource *RepositoryResource) Read(ctx context.Context, req resource.ReadRequest, res *resource.ReadResponse) {
+func (resource *repositoryResource) Read(ctx context.Context, req resource.ReadRequest, res *resource.ReadResponse) {
 	state := &repositoryModel{}
 	diags := req.State.Get(ctx, state)
 	res.Diagnostics.Append(diags...)
@@ -61,7 +61,7 @@ func (resource *RepositoryResource) Read(ctx context.Context, req resource.ReadR
 	}
 }
 
-func (*RepositoryResource) Update(ctx context.Context, req resource.UpdateRequest, res *resource.UpdateResponse) {
+func (*repositoryResource) Update(ctx context.Context, req resource.UpdateRequest, res *resource.UpdateResponse) {
 	plan := &repositoryModel{}
 	diags := req.Plan.Get(ctx, plan)
 	res.Diagnostics.Append(diags...)
@@ -78,7 +78,7 @@ func (*RepositoryResource) Update(ctx context.Context, req resource.UpdateReques
 	}
 }
 
-func (*RepositoryResource) Delete(ctx context.Context, req resource.DeleteRequest, res *resource.DeleteResponse) {
+func (*repositoryResource) Delete(ctx context.Context, req resource.DeleteRequest, res *resource.DeleteResponse) {
 	state := &repositoryModel{}
 	diags := req.State.Get(ctx, state)
 	res.Diagnostics.Append(diags...)
@@ -93,11 +93,11 @@ func (*RepositoryResource) Delete(ctx context.Context, req resource.DeleteReques
 	res.State.RemoveResource(ctx)
 }
 
-func (*RepositoryResource) Metadata(_ context.Context, req resource.MetadataRequest, res *resource.MetadataResponse) {
+func (*repositoryResource) Metadata(_ context.Context, req resource.MetadataRequest, res *resource.MetadataResponse) {
 	res.TypeName = req.ProviderTypeName + "_repository"
 }
 
-func (*RepositoryResource) Schema(_ context.Context, _ resource.SchemaRequest, res *resource.SchemaResponse) {
+func (*repositoryResource) Schema(_ context.Context, _ resource.SchemaRequest, res *resource.SchemaResponse) {
 	res.Schema = schema.Schema{
 		Description: "Declares a repository to copy",
 		Attributes: map[string]schema.Attribute{

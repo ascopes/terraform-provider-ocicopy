@@ -31,7 +31,7 @@ func (*ociCopyProvider) Metadata(_ context.Context, _ provider.MetadataRequest, 
 
 func (provider *ociCopyProvider) Resources(context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
-		func() resource.Resource { return NewRepositoryResource(provider) },
+		func() resource.Resource { return newRepositoryResource(provider) },
 	}
 }
 

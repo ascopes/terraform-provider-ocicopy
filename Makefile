@@ -25,7 +25,7 @@ download:
 .PHONY: clean
 clean:
 	go clean -i -r -x
-	$(RM) -R build/
+	$(RM) -Rv build/ docs/ site/ .venv/
 
 test: build
 	TF_ACC=1 TF_LOG=INFO go test -v ./...

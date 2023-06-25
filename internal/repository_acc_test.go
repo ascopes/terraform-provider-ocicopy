@@ -17,10 +17,11 @@ var (
 
 	providerConfig = dedent.Dedent(`
 		provider "ocicopy" {
-			registries {
-				ecr {
-					registry_url = "123456789012.eu-west-2.dkr.ecr.amazonaws.com"
-					token	     = "ecr-token-1234"
+			registry {
+				registry_url = "123456789012.eu-west-2.dkr.ecr.amazonaws.com"
+				basic_auth {
+					username = "AWS"
+					password = "ecr-token-1234"
 				}
 			}
 		}

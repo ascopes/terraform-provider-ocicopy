@@ -2,9 +2,7 @@ package internal
 
 import (
 	"github.com/google/go-containerregistry/pkg/authn"
-	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
-	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -30,13 +28,6 @@ func (basicAuth basicAuthRegistryModel) GetRegistryUrl() string {
 func getBasicBlockSchema() schema.NestedBlockObject {
 	return schema.NestedBlockObject{
 		Attributes: map[string]schema.Attribute{
-			"registry_url": schema.StringAttribute{
-				Description: "The registry URL to use.",
-				Required:    true,
-				Validators: []validator.String{
-					stringvalidator.LengthAtLeast(1),
-				},
-			},
 			"username": schema.StringAttribute{
 				Description: "The registry username to use.",
 				Required:    true,

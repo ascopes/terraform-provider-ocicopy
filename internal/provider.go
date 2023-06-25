@@ -42,7 +42,7 @@ func (*OciCopyProvider) Schema(_ context.Context, _ provider.SchemaRequest, res 
 	res.Schema = schema.Schema{
 		Description: "Configure the 'ocicopy' Terraform provider.",
 		Blocks: map[string]schema.Block{
-			"registries": getRegistriesBlockSchema(),
+			"registry": getRegistriesBlockSchema(),
 		},
 	}
 }

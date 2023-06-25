@@ -26,13 +26,6 @@ func (bearerAuth bearerAuthRegistryModel) GetRegistryUrl() string {
 func GetBearerBlockSchema() schema.NestedBlockObject {
 	return schema.NestedBlockObject{
 		Attributes: map[string]schema.Attribute{
-			"registry_url": schema.StringAttribute{
-				Description: "The registry URL to use.",
-				Required:    true,
-				Validators: []validator.String{
-					stringvalidator.LengthAtLeast(1),
-				},
-			},
 			"token": schema.StringAttribute{
 				Description: "The registry bearer token to use.",
 				Required:    true,

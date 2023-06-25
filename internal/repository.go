@@ -21,8 +21,6 @@ func NewRepositoryResource(provider *OciCopyProvider) resource.Resource {
 	return &RepositoryResource{Provider: provider}
 }
 
-var _ resource.Resource = &RepositoryResource{}
-
 type RepositoryResource struct {
 	Provider *OciCopyProvider
 }
@@ -81,8 +79,17 @@ func (*RepositoryResource) Update(ctx context.Context, req resource.UpdateReques
 }
 
 func (*RepositoryResource) Delete(ctx context.Context, req resource.DeleteRequest, res *resource.DeleteResponse) {
-	// Just remove it from the state. We don't have anything to physically delete here as we
-	// keep the images.
+	state := &repositoryModel{}
+	diags := req.State.Get(ctx, state)
+	res.Diagnostics.Append(diags...)
+	if diags.HasError() {
+		return
+	}
+
+	if state.DeleteOnDestroy.IsUnknown() || state.DeleteOnDestroy.ValueBool() {
+		res.Diagnostics.AddWarning("Unsupported attribute", "delete_on_destroy is not yet supported and so will be ignored")
+	}
+
 	res.State.RemoveResource(ctx)
 }
 
@@ -101,6 +108,10 @@ func (*RepositoryResource) Schema(_ context.Context, _ resource.SchemaRequest, r
 					// This ID will change depending on the tag hashes, so ignore it for now.
 					stringplanmodifier.RequiresReplace(),
 				},
+			},
+			"delete_on_destroy": schema.BoolAttribute{
+				Description: "Delete the image from the registry when destroying. Defaults to 'true' if unspecified",
+				Optional:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -121,7 +132,7 @@ func (*RepositoryResource) Schema(_ context.Context, _ resource.SchemaRequest, r
 						NestedObject: schema.NestedBlockObject{
 							Attributes: map[string]schema.Attribute{
 								"values": schema.SetAttribute{
-									Description: "Set tags to transfer.",
+									Description: "Collection of tags to copy",
 									ElementType: types.StringType,
 									Required:    true,
 									Validators: []validator.Set{
@@ -131,7 +142,7 @@ func (*RepositoryResource) Schema(_ context.Context, _ resource.SchemaRequest, r
 								},
 								"digests": schema.MapAttribute{
 									Computed:    true,
-									Description: "Mapping of the tags to their expected digest values.",
+									Description: "Mapping of the tags to their expected digest values",
 									ElementType: types.StringType,
 								},
 							},
@@ -160,8 +171,9 @@ func (*RepositoryResource) Schema(_ context.Context, _ resource.SchemaRequest, r
 }
 
 type repositoryModel struct {
-	From repositoryFromModel `tfsdk:"from" json:"from"`
-	To   repositoryToModel   `tfsdk:"to"   json:"to"`
+	DeleteOnDestroy types.Bool          `tfsdk:"delete_on_destroy" json:"delete_on_destroy"`
+	From            repositoryFromModel `tfsdk:"from"              json:"from"`
+	To              repositoryToModel   `tfsdk:"to"                json:"to"`
 
 	// Generated attributes.
 	Id types.String `tfsdk:"id"`

@@ -18,7 +18,7 @@ func getRegistriesBlockSchema() schema.SingleNestedBlock {
 		Description: "Configure registries with authentication details",
 		Attributes: map[string]schema.Attribute{
 			"registry_url": schema.StringAttribute{
-				Description: "The registry URL to use.",
+				Description: "URL that identifies the registry to provide additional configuration for",
 				Required:    true,
 				Validators: []validator.String{
 					stringvalidator.LengthAtLeast(1),

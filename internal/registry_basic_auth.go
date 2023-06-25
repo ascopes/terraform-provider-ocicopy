@@ -6,8 +6,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-var _ registryModel = &basicAuthRegistryModel{}
-
 type basicAuthRegistryModel struct {
 	RegistryUrl types.String `tfsdk:"registry_url"`
 	Username    types.String `tfsdk:"username"`

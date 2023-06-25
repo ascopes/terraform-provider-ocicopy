@@ -13,8 +13,6 @@ func NewOciCopyProvider() provider.Provider {
 	return &OciCopyProvider{}
 }
 
-var _ provider.Provider = &OciCopyProvider{}
-
 type OciCopyProvider struct {
 	Registries registriesModel
 }
@@ -40,7 +38,7 @@ func (provider *OciCopyProvider) Resources(context.Context) []func() resource.Re
 
 func (*OciCopyProvider) Schema(_ context.Context, _ provider.SchemaRequest, res *provider.SchemaResponse) {
 	res.Schema = schema.Schema{
-		Description: "Configure the 'ocicopy' Terraform provider.",
+		Description: "Configuration and settings for this provider",
 		Blocks: map[string]schema.Block{
 			"registry": getRegistriesBlockSchema(),
 		},

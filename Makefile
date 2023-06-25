@@ -1,11 +1,14 @@
+.PHONY: all
+all: tidy build test docs-html
+
 .PHONY: build
 build:
 	go build ./...
 
 .PHONY: tidy
 tidy:
-	go mod tidy
 	go fmt ./...
+	go mod tidy
 
 .PHONY: docs
 docs:

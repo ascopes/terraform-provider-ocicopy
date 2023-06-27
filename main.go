@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 
-	"github.com/ascopes/terraform-provider-ocicopy/internal"
+	"github.com/ascopes/terraform-provider-ocicopy/internal/ocicopyprovider"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 )
 
@@ -13,5 +13,5 @@ func main() {
 	opts := providerserver.ServeOpts{
 		Address: "github.com/ascopes/terraform-provider-ocicopy",
 	}
-	providerserver.Serve(ctx, internal.NewOciCopyProvider, opts)
+	providerserver.Serve(ctx, ocicopyprovider.NewOciCopyProvider, opts)
 }

@@ -30,8 +30,13 @@ clean:
 	go clean -i -r -x
 	$(RM) -Rv build/ docs/ site/ .venv/
 
+.PHONY: test
 test: build
 	TF_ACC=1 TF_LOG=INFO go test -v ./...
+
+.PHONY: manualtest
+manualtest:
+	./manualtest/run.sh
 
 .PHONY: rebuild
 rebuild: clean build

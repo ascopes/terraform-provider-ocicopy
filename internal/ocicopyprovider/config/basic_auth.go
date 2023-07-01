@@ -1,4 +1,4 @@
-package registrymodel
+package config
 
 import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"

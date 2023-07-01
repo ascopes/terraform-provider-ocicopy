@@ -3,10 +3,10 @@ package ocicopyprovider
 import (
 	"context"
 
-	"github.com/ascopes/terraform-provider-ocicopy/internal/ocicopyprovider/registrymodel"
+	"github.com/ascopes/terraform-provider-ocicopy/internal/ocicopyprovider/config"
+	"github.com/ascopes/terraform-provider-ocicopy/internal/ocicopyprovider/imagecopy"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
-	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 )
 
@@ -15,15 +15,15 @@ func NewOciCopyProvider() provider.Provider {
 }
 
 type OciCopyProvider struct {
-	// Attributes
-
-	// Blocks
-	Registries []registrymodel.RegistryConfigurationModel `tfsdk:"registry"`
+	config *config.ConfigModel
 }
 
 func (p *OciCopyProvider) Configure(ctx context.Context, req provider.ConfigureRequest, res *provider.ConfigureResponse) {
-	diags := req.Config.Get(ctx, p)
+	config := &config.ConfigModel{}
+	diags := req.Config.Get(ctx, config)
 	res.Diagnostics.Append(diags...)
+
+	p.config = config
 }
 
 func (*OciCopyProvider) DataSources(context.Context) []func() datasource.DataSource {
@@ -34,18 +34,12 @@ func (*OciCopyProvider) Metadata(_ context.Context, _ provider.MetadataRequest, 
 	res.TypeName = "ocicopy"
 }
 
-func (*OciCopyProvider) Resources(context.Context) []func() resource.Resource {
-	return []func() resource.Resource{}
+func (provider *OciCopyProvider) Resources(context.Context) []func() resource.Resource {
+	return []func() resource.Resource{
+		func() resource.Resource { return imagecopy.NewImageCopyResource(provider.config) },
+	}
 }
 
 func (*OciCopyProvider) Schema(_ context.Context, _ provider.SchemaRequest, res *provider.SchemaResponse) {
-	res.Schema = schema.Schema{
-		Blocks: map[string]schema.Block{
-			"registry": schema.SetNestedBlock{
-				Description:  "Specify additional configuration for a specific registry",
-				NestedObject: registrymodel.RegistryConfigurationSchema(),
-			},
-		},
-		Description: "Global provider configuration that affects all resources and datasources",
-	}
+	res.Schema = config.ConfigSchema()
 }

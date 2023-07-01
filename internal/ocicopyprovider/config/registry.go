@@ -1,4 +1,4 @@
-package registrymodel
+package config
 
 import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
@@ -16,7 +16,7 @@ type RegistryConfigurationModel struct {
 }
 
 // Schema for specific registry configuration details.
-func RegistryConfigurationSchema() schema.NestedBlockObject {
+func registryConfigurationSchema() schema.NestedBlockObject {
 	return schema.NestedBlockObject{
 		Attributes: map[string]schema.Attribute{
 			"basic_authentication":  basicAuthModelSchema(),

@@ -1,7 +1,6 @@
-package registrymodel
+package config
 
 import (
-	"github.com/ascopes/terraform-provider-ocicopy/internal/ocicopyprovider/durationtype"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
@@ -11,11 +10,11 @@ import (
 
 // Configuration for HTTP transports.
 type RegistryHttpConfigurationModel struct {
-	ForceHttp2          *types.Bool                `tfsdk:"force_http2"`
-	Jobs                *types.Int64               `tfsdk:"jobs"`
-	KeepAlive           *durationtype.DurationType `tfsdk:"keep_alive"`
-	Timeout             *durationtype.DurationType `tfsdk:"timeout"`
-	TlsHandshakeTimeout *durationtype.DurationType `tfsdk:"tls_handshake_timeout"`
+	ForceHttp2          *types.Bool   `tfsdk:"force_http2"`
+	Jobs                *types.Int64  `tfsdk:"jobs"`
+	KeepAlive           *DurationType `tfsdk:"keep_alive"`
+	Timeout             *DurationType `tfsdk:"timeout"`
+	TlsHandshakeTimeout *DurationType `tfsdk:"tls_handshake_timeout"`
 }
 
 // Schema for the HTTP configuration attribute.
@@ -35,7 +34,7 @@ func registryHttpConfigurationSchema() schema.SingleNestedAttribute {
 			},
 			"keep_alive": schema.StringAttribute{
 				Description: "Set the connection keepalive duration",
-				CustomType:  durationtype.DurationType{},
+				CustomType:  DurationType{},
 				Optional:    true,
 				Validators: []validator.String{
 					stringvalidator.LengthAtLeast(1),
@@ -43,7 +42,7 @@ func registryHttpConfigurationSchema() schema.SingleNestedAttribute {
 			},
 			"timeout": schema.StringAttribute{
 				Description: "Set the request keepalive duration",
-				CustomType:  durationtype.DurationType{},
+				CustomType:  DurationType{},
 				Optional:    true,
 				Validators: []validator.String{
 					stringvalidator.LengthAtLeast(1),
@@ -51,7 +50,7 @@ func registryHttpConfigurationSchema() schema.SingleNestedAttribute {
 			},
 			"tls_handshake_timeout": schema.StringAttribute{
 				Description: "Set the TLS handshake timeout duration",
-				CustomType:  durationtype.DurationType{},
+				CustomType:  DurationType{},
 				Optional:    true,
 				Validators: []validator.String{
 					stringvalidator.LengthAtLeast(1),

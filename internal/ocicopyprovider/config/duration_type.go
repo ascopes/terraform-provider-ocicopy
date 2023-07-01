@@ -1,4 +1,4 @@
-package durationtype
+package config
 
 import (
 	"context"

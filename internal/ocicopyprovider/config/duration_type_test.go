@@ -1,9 +1,9 @@
-package durationtype_test
+package config_test
 
 import (
 	"testing"
 
-	"github.com/ascopes/terraform-provider-ocicopy/internal/ocicopyprovider/durationtype"
+	"github.com/ascopes/terraform-provider-ocicopy/internal/ocicopyprovider/config"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -23,18 +23,18 @@ func TestDurationTypeEqual(t *testing.T) {
 		{input: types.ListType{}, want: false},
 		{input: types.MapType{}, want: false},
 		{input: types.ObjectType{}, want: false},
-		{input: durationtype.DurationType{}, want: true},
+		{input: config.DurationType{}, want: true},
 	}
 
 	for _, tst := range tests {
-		if (durationtype.DurationType{}).Equal(tst.input) != tst.want {
+		if (config.DurationType{}).Equal(tst.input) != tst.want {
 			t.Fatalf("Expected DurationType{}.Equal(%T) to be %v, got %v", tst.input, tst.want, !tst.want)
 		}
 	}
 }
 
 func TestDurationTypeType(t *testing.T) {
-	input := durationtype.DurationType{}
+	input := config.DurationType{}
 	want := "Duration"
 	got := input.String()
 

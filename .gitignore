@@ -26,3 +26,6 @@ docs/
 site/
 # Python venv for the mkdocs Python wheel
 .venv/
+
+# VSCode stuff
+.vscode/

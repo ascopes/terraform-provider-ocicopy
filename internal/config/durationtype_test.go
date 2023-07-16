@@ -3,7 +3,7 @@ package config_test
 import (
 	"testing"
 
-	"github.com/ascopes/terraform-provider-ocicopy/internal/ocicopyprovider/config"
+	"github.com/ascopes/terraform-provider-ocicopy/internal/config"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )

@@ -1,4 +1,4 @@
-package imagecopy
+package image
 
 import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -22,6 +22,8 @@ func imageCopyModelSchema() schema.Schema {
 
 type sourceImageModel struct {
 	RegistryUrl types.String `tfsdk:"registry_url"`
+	Image       types.String `tfsdk:"image"`
+	Tag         types.String `tfsdk:"tag"`
 }
 
 func sourceImageModelSchema() schema.SingleNestedAttribute {
@@ -29,6 +31,14 @@ func sourceImageModelSchema() schema.SingleNestedAttribute {
 		Attributes: map[string]schema.Attribute{
 			"registry_url": schema.StringAttribute{
 				Description: "The registry URL to copy the image from",
+				Required:    true,
+			},
+			"image": schema.StringAttribute{
+				Description: "The image name to copy",
+				Required:    true,
+			},
+			"tag": schema.StringAttribute{
+				Description: "The image tag to copy",
 				Required:    true,
 			},
 		},
@@ -39,6 +49,8 @@ func sourceImageModelSchema() schema.SingleNestedAttribute {
 
 type targetImageModel struct {
 	RegistryUrl types.String `tfsdk:"registry_url"`
+	Image       types.String `tfsdk:"image"`
+	Tag         types.String `tfsdk:"tag"`
 }
 
 func targetImageModelSchema() schema.SingleNestedAttribute {
@@ -47,6 +59,14 @@ func targetImageModelSchema() schema.SingleNestedAttribute {
 			"registry_url": schema.StringAttribute{
 				Description: "The registry URL to copy the image to",
 				Required:    true,
+			},
+			"image": schema.StringAttribute{
+				Description: "The image name to store (or omit to use the source image name)",
+				Optional:    true,
+			},
+			"tag": schema.StringAttribute{
+				Description: "The image tag to store (or omit to use the source tag)",
+				Optional:    true,
 			},
 		},
 		Description: "A description of the destination of the copy of the given image",

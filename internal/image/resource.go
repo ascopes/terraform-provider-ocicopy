@@ -1,9 +1,9 @@
-package imagecopy
+package image
 
 import (
 	"context"
 
-	"github.com/ascopes/terraform-provider-ocicopy/internal/ocicopyprovider/config"
+	"github.com/ascopes/terraform-provider-ocicopy/internal/config"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 )
 
@@ -15,11 +15,11 @@ type imageCopyResource struct {
 	config *config.ConfigModel
 }
 
-func (*imageCopyResource) Create(ctx context.Context, req resource.CreateRequest, res resource.CreateResponse) {
+func (*imageCopyResource) Create(ctx context.Context, req resource.CreateRequest, res *resource.CreateResponse) {
 	panic("unimplemented")
 }
 
-func (*imageCopyResource) Delete(ctx context.Context, req resource.DeleteRequest, res resource.DeleteResponse) {
+func (*imageCopyResource) Delete(ctx context.Context, req resource.DeleteRequest, res *resource.DeleteResponse) {
 	panic("unimplemented")
 }
 

@@ -1,10 +1,10 @@
-package ocicopyprovider
+package internal
 
 import (
 	"context"
 
-	"github.com/ascopes/terraform-provider-ocicopy/internal/ocicopyprovider/config"
-	"github.com/ascopes/terraform-provider-ocicopy/internal/ocicopyprovider/imagecopy"
+	"github.com/ascopes/terraform-provider-ocicopy/internal/config"
+	"github.com/ascopes/terraform-provider-ocicopy/internal/image"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -36,7 +36,7 @@ func (*OciCopyProvider) Metadata(_ context.Context, _ provider.MetadataRequest, 
 
 func (provider *OciCopyProvider) Resources(context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
-		func() resource.Resource { return imagecopy.NewImageCopyResource(provider.config) },
+		func() resource.Resource { return image.NewImageCopyResource(provider.config) },
 	}
 }
 

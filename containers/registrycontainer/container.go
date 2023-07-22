@@ -37,6 +37,9 @@ func (registryContainer *RegistryTestContainer) Start(ctx context.Context) {
 		Image:        "docker.io/library/registry:2",
 		ExposedPorts: []string{"5000"},
 		WaitingFor:   wait.ForListeningPort("5000/tcp"),
+		Env: map[string]string{
+			"REGISTRY_STORAGE_DELETE_ENABLED": "true",
+		},
 	}
 
 	genericReq := testcontainers.GenericContainerRequest{
@@ -61,7 +64,6 @@ func (registryContainer *RegistryTestContainer) Stop(ctx context.Context) {
 			panic(err)
 		}
 	}
-
 }
 
 func (registryContainer *RegistryTestContainer) HostVisibleEndpoint(ctx context.Context) string {
@@ -69,6 +71,6 @@ func (registryContainer *RegistryTestContainer) HostVisibleEndpoint(ctx context.
 	if err != nil {
 		panic(err.Error())
 	}
-	endpoint := fmt.Sprintf("http://localhost:%s", port.Port())
+	endpoint := fmt.Sprintf("localhost:%s", port.Port())
 	return endpoint
 }

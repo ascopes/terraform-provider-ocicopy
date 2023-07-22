@@ -43,17 +43,22 @@ func TestAccProvider_CopyImageAcross(t *testing.T) {
 		"",
 		"resource \"ocicopy_image\" \"hello_world\" {",
 		"  source = {",
-		"    registry_url = \"%[1]s\"",
-		"    image        = \"hello-world\"",
-		"    tag          = \"latest\"",
+		"    registry   = \"%[1]s\"",
+		"    repository = \"%[3]s\"",
+		"    digest     = \"%[4]s\"",
 		"  }",
 		"  target = {",
-		"    registry_url = \"%[2]s\"",
+		"    registry   = \"%[2]s\"",
+		"    repository = \"%[3]s\"",
+		"    tag        = \"%[5]s\"",
 		"  }",
 		"}",
 	).format(
 		"docker.io",
 		container.HostVisibleEndpoint(ctx),
+		"hello-world",
+		"sha256:004d23c66201b22fce069b7505756f17088de7889c83891e9bc69d749fa3690e",
+		"latest",
 	)
 
 	resource.Test(t, resource.TestCase{

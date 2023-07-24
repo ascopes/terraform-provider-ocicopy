@@ -2,6 +2,7 @@ package set
 
 import (
 	"fmt"
+	"reflect"
 	"testing"
 
 	"gotest.tools/v3/assert"
@@ -171,20 +172,9 @@ func Test_HashSet_String_ReturnsExpectedValue(t *testing.T) {
 	set.Add(768)
 	set.Add(1266)
 
-	wantedStr := "{"
-	i := 0
-	for item := range set.Iterator() {
-		if i > 0 {
-			wantedStr += ", "
-		}
-		wantedStr += fmt.Sprintf("%#v", item)
-		i++
-	}
-	wantedStr += "}"
-
 	// When
 	actualStr := set.String()
 
 	// Then
-	assert.Equal(t, wantedStr, actualStr)
+	assert.Equal(t, "{768, 1266, 1366}", actualStr)
 }

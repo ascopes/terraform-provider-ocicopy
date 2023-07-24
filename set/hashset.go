@@ -2,9 +2,6 @@ package set
 
 import (
 	"fmt"
-	"reflect"
-	"sort"
-	"strings"
 )
 
 func NewHashSet[T comparable]() Set[T] {
@@ -56,24 +53,5 @@ func (set *hashSet[T]) Remove(item T) bool {
 }
 
 func (set *hashSet[T]) String() string {
-	bldr := strings.Builder{}
-	bldr.WriteRune('{')
-
-	// Obtain a sorted slice as map key iteration order can differ
-	// between calls, which makes this output difficult to predict
-	// and even harder to actually test.
-	keys := reflect.ValueOf(myMap).MapKeys()
-	sort.Slice(keys, func(a int, b int) bool {
-		return keys[a].Interface().(T) < keys[b].Interface().(T)
-	})
-
-	for i, item := range keys {
-		if i > 0 {
-			writer.WriteString(", ")
-		}
-		writer.WriteString(fmt.Sprintf("%#v", item))
-	}
-	
-	bldr.WriteRune('}')
-	return bldr.String()
+	return set.GoString()
 }

@@ -2,7 +2,6 @@ package set
 
 import (
 	"fmt"
-	"reflect"
 	"testing"
 
 	"gotest.tools/v3/assert"

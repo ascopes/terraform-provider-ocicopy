@@ -166,15 +166,25 @@ func Test_HashSet_Remove_ReturnsTrueWhenItemExists(t *testing.T) {
 
 func Test_HashSet_String_ReturnsExpectedValue(t *testing.T) {
 	// Given
-	set := NewHashSet[string]()
-	set.Add("foo")
-	set.Add("bar")
-	set.Add("baz")
-	hashSet := set.(*hashSet[string])
+	set := NewHashSet[int]()
+	set.Add(1366)
+	set.Add(768)
+	set.Add(1266)
+
+	wantedStr := "{"
+	i := 0
+	for item := range set.Iterator() {
+		if i > 0 {
+			wantedStr += ", "
+		}
+		wantedStr += fmt.Sprintf("%#v", item)
+		i++
+	}
+	wantedStr += "}"
 
 	// When
-	actualStr := set.GoString()
+	actualStr := set.String()
 
 	// Then
-	assert.Equal(t, fmt.Sprintf("hashSet{data: %v}", hashSet.data), actualStr)
+	assert.Equal(t, wantedStr, actualStr)
 }

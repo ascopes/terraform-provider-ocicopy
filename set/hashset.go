@@ -2,6 +2,8 @@ package set
 
 import (
 	"fmt"
+	"reflect"
+	"sort"
 	"strings"
 )
 
@@ -56,14 +58,22 @@ func (set *hashSet[T]) Remove(item T) bool {
 func (set *hashSet[T]) String() string {
 	bldr := strings.Builder{}
 	bldr.WriteRune('{')
-	i := 0
-	for item := range set.Iterator() {
+
+	// Obtain a sorted slice as map key iteration order can differ
+	// between calls, which makes this output difficult to predict
+	// and even harder to actually test.
+	keys := reflect.ValueOf(myMap).MapKeys()
+	sort.Slice(keys, func(a int, b int) bool {
+		return keys[a].Interface().(T) < keys[b].Interface().(T)
+	})
+
+	for i, item := range keys {
 		if i > 0 {
-			bldr.WriteString(", ")
+			writer.WriteString(", ")
 		}
-		bldr.WriteString(fmt.Sprintf("%#v", item))
-		i++
+		writer.WriteString(fmt.Sprintf("%#v", item))
 	}
+	
 	bldr.WriteRune('}')
 	return bldr.String()
 }

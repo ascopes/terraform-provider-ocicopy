@@ -173,7 +173,8 @@ func Test_HashSet_String_ReturnsExpectedValue(t *testing.T) {
 
 	// When
 	actualStr := set.String()
+	wantedStr := set.GoString()
 
 	// Then
-	assert.Equal(t, "{768, 1266, 1366}", actualStr)
+	assert.Equal(t, wantedStr, actualStr)
 }

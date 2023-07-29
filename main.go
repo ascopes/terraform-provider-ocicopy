@@ -9,7 +9,7 @@ package main
 
 // go:generate go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs
 func main() {
-// 	ctx := context.Background()
-// 	opts := providerserver.ServeOpts{Address: "github.com/ascopes/terraform-provider-ocicopy"}
-// 	providerserver.Serve(ctx, internal.NewOciCopyProvider, opts)
+	// ctx := context.Background()
+	// opts := providerserver.ServeOpts{Address: "github.com/ascopes/terraform-provider-ocicopy"}
+	// providerserver.Serve(ctx, internal.NewOciCopyProvider, opts)
 }

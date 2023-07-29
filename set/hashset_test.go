@@ -7,7 +7,7 @@ import (
 	"gotest.tools/v3/assert"
 )
 
-func Test_HashSetNew_ReturnsNewHashSet(t *testing.T) {
+func Test_NewHashSet_ReturnsNewHashSet(t *testing.T) {
 	// When
 	set := NewHashSet[string]()
 

@@ -13,39 +13,39 @@ func Test_NewRegistryConfig_ReturnsExpectedDefaults(t *testing.T) {
 
 	// Then
 	t.Run("authenticator", func(t *testing.T) {
-		assert.Equal(t, anonymousAuthenticatorInstance, got.authenticator)
+		assert.Equal(t, anonymousAuthenticatorInstance, got.Authenticator)
 	})
 	t.Run("concurrentJobs", func(t *testing.T) {
-		assert.Equal(t, 4, got.concurrentJobs)
+		assert.Equal(t, 4, got.ConcurrentJobs)
 	})
 	t.Run("connectTimeout", func(t *testing.T) {
-		assert.Equal(t, 16*time.Second, got.connectTimeout)
+		assert.Equal(t, 16*time.Second, got.ConnectTimeout)
 	})
 	t.Run("forceAttemptHttp2", func(t *testing.T) {
-		assert.Equal(t, true, got.forceAttemptHttp2)
+		assert.Equal(t, true, got.ForceAttemptHttp2)
 	})
 	t.Run("idleConnectionTimeout", func(t *testing.T) {
-		assert.Equal(t, 1*time.Hour, got.idleConnectionTimeout)
+		assert.Equal(t, 1*time.Hour, got.IdleConnectionTimeout)
 	})
 	t.Run("keepAlive", func(t *testing.T) {
-		assert.Equal(t, 1*time.Hour, got.keepAlive)
+		assert.Equal(t, 1*time.Hour, got.KeepAlive)
 	})
 	t.Run("maxIdleConnections", func(t *testing.T) {
-		assert.Equal(t, 10, got.maxIdleConnections)
+		assert.Equal(t, 10, got.MaxIdleConnections)
 	})
 	t.Run("responseTimeout", func(t *testing.T) {
-		assert.Equal(t, 16*time.Second, got.responseTimeout)
+		assert.Equal(t, 16*time.Second, got.ResponseTimeout)
 	})
 	t.Run("tlsHandshakeTimeout", func(t *testing.T) {
-		assert.Equal(t, 16*time.Second, got.tlsHandshakeTimeout)
+		assert.Equal(t, 16*time.Second, got.TlsHandshakeTimeout)
 	})
 }
 
 func Test_RegistryConfig_createDialer_ReturnsExpectedResult(t *testing.T) {
 	// Given
 	config := RegistryConfig{
-		connectTimeout: 1 * time.Minute,
-		keepAlive:      5 * time.Minute,
+		ConnectTimeout: 1 * time.Minute,
+		KeepAlive:      5 * time.Minute,
 	}
 
 	// When
@@ -59,13 +59,13 @@ func Test_RegistryConfig_createDialer_ReturnsExpectedResult(t *testing.T) {
 func Test_RegistryConfig_createRoundTripper_ReturnsExpectedResult(t *testing.T) {
 	// Given
 	config := RegistryConfig{
-		connectTimeout:        1 * time.Minute,
-		forceAttemptHttp2:     true,
-		idleConnectionTimeout: 10 * time.Minute,
-		keepAlive:             12 * time.Second,
-		maxIdleConnections:    32,
-		responseTimeout:       31 * time.Second,
-		tlsHandshakeTimeout:   13 * time.Second,
+		ConnectTimeout:        1 * time.Minute,
+		ForceAttemptHttp2:     true,
+		IdleConnectionTimeout: 10 * time.Minute,
+		KeepAlive:             12 * time.Second,
+		MaxIdleConnections:    32,
+		ResponseTimeout:       31 * time.Second,
+		TlsHandshakeTimeout:   13 * time.Second,
 	}
 
 	// When
@@ -96,15 +96,15 @@ func Test_RegistryConfig_createRoundTripper_ReturnsExpectedResult(t *testing.T) 
 func Test_RegistryConfig_createDockerOptions_ReturnsExpectedSlice(t *testing.T) {
 	// Given
 	config := RegistryConfig{
-		authenticator:         NewBasicAuthenticator("foo-usr", "bar-psw"),
-		concurrentJobs:        12,
-		connectTimeout:        1 * time.Minute,
-		forceAttemptHttp2:     true,
-		idleConnectionTimeout: 10 * time.Minute,
-		keepAlive:             12 * time.Second,
-		maxIdleConnections:    32,
-		responseTimeout:       31 * time.Second,
-		tlsHandshakeTimeout:   13 * time.Second,
+		Authenticator:         NewBasicAuthenticator("foo-usr", "bar-psw"),
+		ConcurrentJobs:        12,
+		ConnectTimeout:        1 * time.Minute,
+		ForceAttemptHttp2:     true,
+		IdleConnectionTimeout: 10 * time.Minute,
+		KeepAlive:             12 * time.Second,
+		MaxIdleConnections:    32,
+		ResponseTimeout:       31 * time.Second,
+		TlsHandshakeTimeout:   13 * time.Second,
 	}
 
 	// When

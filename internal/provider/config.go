@@ -24,10 +24,10 @@ type registryConfigModel struct {
 	IdleConnectionTimeout durationtype.DurationValue `tfsdk:"idle_connection_timeout"`
 	Insecure              types.Bool                 `tfsdk:"insecure"`
 	KeepAlive             durationtype.DurationValue `tfsdk:"keep_alive"`
-	Name                  types.String               `tfsdk:"name"`
 	MaxIdleConnections    types.Int64                `tfsdk:"max_idle_connections"`
 	ResponseTimeout       durationtype.DurationValue `tfsdk:"response_timeout"`
 	TlsHandshakeTimeout   durationtype.DurationValue `tfsdk:"tls_handshake_timeout"`
+	Url                   types.String               `tfsdk:"url"`
 }
 
 type basicAuthModel struct {
@@ -117,10 +117,6 @@ func providerConfigModelSchema() schema.Schema {
 								int64validator.AtLeast(1),
 							},
 						},
-						"name": schema.StringAttribute{
-							Description: "The name of the registry to configure",
-							Required:    true,
-						},
 						"response_timeout": schema.StringAttribute{
 							CustomType:  durationtype.DurationType{},
 							Description: "The maximum duration to wait for an HTTP response to be received before timing out",
@@ -130,6 +126,10 @@ func providerConfigModelSchema() schema.Schema {
 							CustomType:  durationtype.DurationType{},
 							Description: "The maximum duration to wait for a TLS handshake to complete before timing out",
 							Optional:    true,
+						},
+						"url": schema.StringAttribute{
+							Description: "The URL of the registry to configure",
+							Required:    true,
 						},
 					},
 				},

@@ -118,7 +118,7 @@ func providerConfigModelSchema() schema.Schema {
 							},
 						},
 						"name": schema.StringAttribute{
-							Description: "The name of the registry to configure (e.g. \"docker.io\", \"public.ecr.aws\", etc)",
+							Description: "The name of the registry to configure",
 							Required:    true,
 						},
 						"response_timeout": schema.StringAttribute{

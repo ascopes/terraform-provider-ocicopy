@@ -1,38 +1,38 @@
-package registrycontainer
+package containers
 
 import (
 	"context"
 	"fmt"
-	"runtime"
+	"testing"
 
+	"github.com/docker/go-connections/nat"
 	"github.com/google/uuid"
-	"github.com/opencontainers/selinux/go-selinux"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/wait"
 )
 
+const image = "docker.io/library/registry:2"
+const primaryPort = "5000"
+const primaryPortNat = nat.Port(primaryPort + "/tcp")
+
 // Create a new object that can start a test container for a Docker registry server.
-func NewRegistryTestContainer() *RegistryTestContainer {
-	if runtime.GOOS == "linux" && selinux.EnforceMode() == selinux.Enforcing {
-		panic(
-			"SELinux is enabled and set to 'Enforcing'. testcontainers-ryuk cannot start under this setting. " +
-				"Please run 'sudo setenforce permissive' to lower the SELinux enforcement level to allow " +
-				"Ryuk to start.",
-		)
-	}
+func NewRegistryTestContainer(t *testing.T) *RegistryTestContainer {
+	enforceSeLinuxPermissive()
 
 	return &RegistryTestContainer{
-		Debug:         false,
 		name:          fmt.Sprintf("registry-%s", uuid.NewString()),
 		containerImpl: nil,
+		test:          t,
+		LogLevel:      "info",
 	}
 }
 
 // The registry test container implementation.
 type RegistryTestContainer struct {
-	Debug         bool
 	name          string
 	containerImpl testcontainers.Container
+	test          *testing.T
+	LogLevel      string
 }
 
 // Start the internal container.
@@ -41,18 +41,13 @@ func (registryContainer *RegistryTestContainer) Start(ctx context.Context) {
 		return
 	}
 
-	var logLevel string
-	if registryContainer.Debug {
-		logLevel = "debug"
-	} else {
-		logLevel = "info"
-	}
+	registryContainer.test.Logf("Starting Docker Registry testcontainer (%s)", registryContainer.name)
 
 	req := testcontainers.ContainerRequest{
 		Name:         registryContainer.name,
-		Image:        "docker.io/library/registry:2",
-		ExposedPorts: []string{"5000"},
-		WaitingFor:   wait.ForListeningPort("5000/tcp"),
+		Image:        image,
+		ExposedPorts: []string{primaryPort},
+		WaitingFor:   wait.ForListeningPort(primaryPortNat),
 		Env: map[string]string{
 			// Docs: https://docs.docker.com/registry/configuration/
 
@@ -62,7 +57,7 @@ func (registryContainer *RegistryTestContainer) Start(ctx context.Context) {
 			"REGISTRY_AUTH_SILLY_SERVICE":                        registryContainer.name,
 			"REGISTRY_HTTP_HTTP2_DISABLED":                       "false",
 			"REGISTRY_LOG_ACCESSLOG_ENABLED":                     "true",
-			"REGISTRY_LOG_LEVEL":                                 logLevel,
+			"REGISTRY_LOG_LEVEL":                                 registryContainer.LogLevel,
 			"REGISTRY_STORAGE_DELETE_ENABLED":                    "true",
 			"REGISTRY_STORAGE_MAINTENANCE_UPLOADPURGING_ENABLED": "false",
 		},
@@ -70,7 +65,9 @@ func (registryContainer *RegistryTestContainer) Start(ctx context.Context) {
 
 	genericReq := testcontainers.GenericContainerRequest{
 		ContainerRequest: req,
-		Started:          true,
+		Started:          false,
+		Logger:           testcontainers.TestLogger(registryContainer.test),
+		Reuse:            true,
 	}
 
 	container, err := testcontainers.GenericContainer(ctx, genericReq)
@@ -79,6 +76,10 @@ func (registryContainer *RegistryTestContainer) Start(ctx context.Context) {
 	}
 
 	registryContainer.containerImpl = container
+
+	if err = container.Start(ctx); err != nil {
+		panic(err)
+	}
 }
 
 // Stop the internal container.
@@ -93,7 +94,7 @@ func (registryContainer *RegistryTestContainer) Stop(ctx context.Context) {
 }
 
 func (registryContainer *RegistryTestContainer) HostVisibleEndpoint(ctx context.Context) string {
-	port, err := registryContainer.containerImpl.MappedPort(ctx, "5000/tcp")
+	port, err := registryContainer.containerImpl.MappedPort(ctx, primaryPortNat)
 	if err != nil {
 		panic(err.Error())
 	}

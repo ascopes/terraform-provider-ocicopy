@@ -44,7 +44,7 @@ docs: .venv/bin/mkdocs generate
 
 .PHONY: generate
 generate: get
-	if [[ ! -d docs/ ]]; then mkdir docs/; fi
+	mkdir docs || true
 	go generate ./...
 
 .PHONY: get

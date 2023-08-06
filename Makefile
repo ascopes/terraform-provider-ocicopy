@@ -5,6 +5,10 @@ all: tidy build test docs-html
 build:
 	go build ./...
 
+.PHONY: install
+install:
+	go install ocicopy/...
+
 .PHONY: tidy
 tidy:
 	go fmt ./...

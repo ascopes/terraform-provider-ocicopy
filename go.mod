@@ -3,7 +3,7 @@ module github.com/ascopes/terraform-provider-ocicopy
 go 1.20
 
 require (
-	github.com/google/go-containerregistry v0.15.2
+	github.com/google/go-containerregistry v0.16.1
 	github.com/google/uuid v1.3.0
 	github.com/hashicorp/terraform-plugin-framework-validators v0.11.0
 	github.com/hashicorp/terraform-plugin-go v0.18.0
@@ -39,9 +39,9 @@ require (
 	github.com/containerd/stargz-snapshotter/estargz v0.14.3 // indirect
 	github.com/cpuguy83/dockercfg v0.3.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/docker/cli v23.0.5+incompatible // indirect
+	github.com/docker/cli v24.0.0+incompatible // indirect
 	github.com/docker/distribution v2.8.2+incompatible // indirect
-	github.com/docker/docker v23.0.5+incompatible // indirect
+	github.com/docker/docker v24.0.0+incompatible // indirect
 	github.com/docker/docker-credential-helpers v0.7.0 // indirect
 	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
@@ -62,14 +62,14 @@ require (
 	github.com/opencontainers/runc v1.1.5 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/sirupsen/logrus v1.9.0 // indirect
+	github.com/sirupsen/logrus v1.9.1 // indirect
 	github.com/vbatts/tar-split v0.11.3 // indirect
 	golang.org/x/exp v0.0.0-20230510235704-dd950f8aeaea // indirect
 	golang.org/x/mod v0.10.0 // indirect
 	golang.org/x/net v0.11.0 // indirect
-	golang.org/x/sync v0.1.0 // indirect
+	golang.org/x/sync v0.2.0 // indirect
 	golang.org/x/sys v0.9.0 // indirect
-	golang.org/x/tools v0.8.0 // indirect
+	golang.org/x/tools v0.9.1 // indirect
 	google.golang.org/genproto v0.0.0-20230410155749-daa745c078e1 // indirect
 	google.golang.org/grpc v1.56.1 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect

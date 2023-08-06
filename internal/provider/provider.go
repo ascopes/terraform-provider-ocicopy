@@ -9,32 +9,35 @@ import (
 )
 
 type providerImpl struct {
-	config *providerConfigModel
+	data *providerModel
 }
 
 func NewProvider() provider.Provider {
 	return &providerImpl{
-		config: &providerConfigModel{},
+		data: &providerModel{},
 	}
 }
 
 func (provider *providerImpl) Configure(ctx context.Context, req provider.ConfigureRequest, res *provider.ConfigureResponse) {
-	diags := req.Config.Get(ctx, provider.config)
+	diags := req.Config.Get(ctx, provider.data)
 	res.Diagnostics.Append(diags...)
 }
 
-func (*providerImpl) DataSources(ctx context.Context) []func() datasource.DataSource {
+func (provider *providerImpl) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{}
 }
 
-func (*providerImpl) Metadata(ctx context.Context, req provider.MetadataRequest, res *provider.MetadataResponse) {
+func (provider *providerImpl) Metadata(ctx context.Context, req provider.MetadataRequest, res *provider.MetadataResponse) {
 	res.TypeName = "ocicopy"
 }
 
-func (*providerImpl) Resources(ctx context.Context) []func() resource.Resource {
-	return []func() resource.Resource{}
+func (provider *providerImpl) Resources(ctx context.Context) []func() resource.Resource {
+	return []func() resource.Resource{
+		// TODO: uncomment once resource is implemented so tests do not panic.
+		//func() resource.Resource { return NewImageResource(provider.data) },
+	}
 }
 
-func (*providerImpl) Schema(ctx context.Context, req provider.SchemaRequest, res *provider.SchemaResponse) {
+func (provider *providerImpl) Schema(ctx context.Context, req provider.SchemaRequest, res *provider.SchemaResponse) {
 	res.Schema = providerConfigModelSchema()
 }

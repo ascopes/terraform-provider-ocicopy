@@ -2,6 +2,8 @@ package provider
 
 import (
 	"github.com/ascopes/terraform-provider-ocicopy/internal/durationtype"
+	"github.com/ascopes/terraform-provider-ocicopy/internal/mapping"
+	"github.com/ascopes/terraform-provider-ocicopy/internal/registryapi"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -10,9 +12,21 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-type providerConfigModel struct {
+type providerModel struct {
 	// Used as a repeatable block.
 	Registries []registryConfigModel `tfsdk:"registry"`
+}
+
+func (configModel *providerModel) getRegistryConfig(registryUrl string) registryapi.RegistryConfig {
+	for _, registryConfigModel := range configModel.Registries {
+		// TODO: could this become "unknown" prior to apply? How do we deal with that..?
+		if registryConfigModel.Url.ValueString() == registryUrl {
+			return registryConfigModel.toRegistryConfig()
+		}
+	}
+
+	// Return defaults for anything else.
+	return registryapi.NewRegistryConfig()
 }
 
 type registryConfigModel struct {
@@ -30,13 +44,79 @@ type registryConfigModel struct {
 	Url                   types.String               `tfsdk:"url"`
 }
 
+// Create a registryapi-compatible registry configuration object from the given
+// registry config Terraform model.
+func (configModel *registryConfigModel) toRegistryConfig() registryapi.RegistryConfig {
+	config := registryapi.NewRegistryConfig()
+
+	mapping.IfNotNil(
+		configModel.BasicAuth,
+		func(value *basicAuthModel) { config.Authenticator = value.toAuthenticator() },
+	)
+	mapping.IfNotNil(
+		configModel.BearerAuth,
+		func(value *bearerAuthModel) { config.Authenticator = value.toAuthenticator() },
+	)
+	mapping.IfPresent(
+		configModel.ConcurrentJobs,
+		func(value types.Int64) { config.ConcurrentJobs = int(value.ValueInt64()) },
+	)
+	mapping.IfPresent(
+		configModel.ConnectTimeout,
+		func(value durationtype.DurationValue) { config.ConnectTimeout = value.ValueDuration() },
+	)
+	mapping.IfPresent(
+		configModel.ForceAttemptHttp2,
+		func(value types.Bool) { config.ForceAttemptHttp2 = value.ValueBool() },
+	)
+	mapping.IfPresent(
+		configModel.IdleConnectionTimeout,
+		func(value durationtype.DurationValue) { config.IdleConnectionTimeout = value.ValueDuration() },
+	)
+	mapping.IfPresent(
+		configModel.Insecure,
+		func(value types.Bool) { config.Insecure = value.ValueBool() },
+	)
+	mapping.IfPresent(
+		configModel.KeepAlive,
+		func(value durationtype.DurationValue) { config.KeepAlive = value.ValueDuration() },
+	)
+	mapping.IfPresent(
+		configModel.MaxIdleConnections,
+		func(value types.Int64) { config.MaxIdleConnections = int(value.ValueInt64()) },
+	)
+	mapping.IfPresent(
+		configModel.ResponseTimeout,
+		func(value durationtype.DurationValue) { config.ResponseTimeout = value.ValueDuration() },
+	)
+	mapping.IfPresent(
+		configModel.TlsHandshakeTimeout,
+		func(value durationtype.DurationValue) { config.TlsHandshakeTimeout = value.ValueDuration() },
+	)
+
+	return config
+}
+
 type basicAuthModel struct {
 	Username types.String `tfsdk:"username"`
 	Password types.String `tfsdk:"password"`
 }
 
+func (authModel *basicAuthModel) toAuthenticator() registryapi.Authenticator {
+	return registryapi.NewBasicAuthenticator(
+		authModel.Username.ValueString(),
+		authModel.Password.ValueString(),
+	)
+}
+
 type bearerAuthModel struct {
 	Token types.String `tfsdk:"token"`
+}
+
+func (authModel *bearerAuthModel) toAuthenticator() registryapi.Authenticator {
+	return registryapi.NewBearerAuthenticator(
+		authModel.Token.ValueString(),
+	)
 }
 
 func providerConfigModelSchema() schema.Schema {
@@ -102,7 +182,7 @@ func providerConfigModelSchema() schema.Schema {
 							Optional:    true,
 						},
 						"insecure": schema.BoolAttribute{
-							Description: "If true, then allow communication with insecure registries",
+							Description: "Set to true to disable SSL and fall back to plain HTTP rather than HTTPS",
 							Optional:    true,
 						},
 						"keep_alive": schema.StringAttribute{
@@ -128,7 +208,7 @@ func providerConfigModelSchema() schema.Schema {
 							Optional:    true,
 						},
 						"url": schema.StringAttribute{
-							Description: "The URL of the registry to configure",
+							Description: "The URL of the registry to configure, minus any protocol",
 							Required:    true,
 						},
 					},

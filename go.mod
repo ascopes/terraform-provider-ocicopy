@@ -10,7 +10,7 @@ require (
 	github.com/opencontainers/selinux v1.11.0
 	github.com/stretchr/testify v1.8.4
 	github.com/testcontainers/testcontainers-go v0.21.0
-	gotest.tools/v3 v3.0.3
+	gotest.tools/v3 v3.5.0
 )
 
 require (

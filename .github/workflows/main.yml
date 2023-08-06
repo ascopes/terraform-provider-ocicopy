@@ -32,6 +32,7 @@ jobs:
   docs:
     name: Generate GitHub Pages documentation
     runs-on: ubuntu-latest
+    if: false  # todo: re-enable
 
     permissions:
       pages: write

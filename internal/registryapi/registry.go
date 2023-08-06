@@ -3,7 +3,7 @@ package registryapi
 import (
 	"context"
 
-	"github.com/ascopes/terraform-provider-ocicopy/ocicopy/set"
+	"github.com/ascopes/terraform-provider-ocicopy/internal/set"
 )
 
 // Base interface for a registry client. The implementation is kept separate to allow easy

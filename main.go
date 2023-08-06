@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 
-	"github.com/ascopes/terraform-provider-ocicopy/ocicopy/provider"
+	"github.com/ascopes/terraform-provider-ocicopy/internal/provider"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 )
 

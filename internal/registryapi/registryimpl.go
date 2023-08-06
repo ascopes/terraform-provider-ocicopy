@@ -3,7 +3,7 @@ package registryapi
 import (
 	"context"
 
-	"github.com/ascopes/terraform-provider-ocicopy/ocicopy/set"
+	"github.com/ascopes/terraform-provider-ocicopy/internal/set"
 	"github.com/google/go-containerregistry/pkg/name"
 	v1api "github.com/google/go-containerregistry/pkg/v1"
 	v1remote "github.com/google/go-containerregistry/pkg/v1/remote"

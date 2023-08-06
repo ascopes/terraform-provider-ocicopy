@@ -1,7 +1,7 @@
 package provider
 
 import (
-	"github.com/ascopes/terraform-provider-ocicopy/ocicopy/durationtype"
+	"github.com/ascopes/terraform-provider-ocicopy/internal/durationtype"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"

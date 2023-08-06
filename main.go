@@ -7,9 +7,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 )
 
-// go:generate go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs
 func main() {
 	ctx := context.Background()
 	opts := providerserver.ServeOpts{Address: "github.com/ascopes/terraform-provider-ocicopy"}
 	providerserver.Serve(ctx, provider.NewProvider, opts)
 }
+
+//go:generate go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs generate
+//go:vet      go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs validate

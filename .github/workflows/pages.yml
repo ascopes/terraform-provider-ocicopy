@@ -9,7 +9,6 @@ jobs:
   pages:
     name: Generate GitHub Pages documentation
     runs-on: ubuntu-latest
-    if: false  # todo: re-enable
 
     permissions:
       pages: write
@@ -23,19 +22,16 @@ jobs:
       uses: actions/setup-go@v4
       with:
         check-latest: true
-        go-version: "^1.20.0"
+        go-version: "^1.20.6"
 
     - name: Configure Python
       uses: actions/setup-python@v4
       with:
         check-latest: true
         python-version: "^3.11"
-    
-    - name: Download dependencies
-      run: make download
 
     - name: Generate documentation
-      run: make docs-html
+      run: make docs
 
     - name: Upload Site
       uses: actions/upload-pages-artifact@v2
@@ -45,4 +41,3 @@ jobs:
     - name: Deploy uploaded documentation
       id: documentation
       uses: actions/deploy-pages@v2
-    

@@ -1,46 +1,68 @@
-.PHONY: all
-all: tidy build test docs-html
+GENERATED_DIRS 		 := docs/ site/
+GENERATED_CACHE_DIRS := .venv/
+
+.PHONY: help
+help:
+	@-echo "terraform-provider-ocicopy"
+	@-echo "=========================="
+	@-echo ""
+	@-echo "Usage: make [<target> ...]"
+	@-echo "Run a build step."
+	@-echo ""
+	@-echo "Supported targets:"
+	@-echo ""
+	@-echo "  build     - Compile the provider and any tests."
+	@-echo "  clean     - Delete cached files from builds."
+	@-echo "  deepclean - Same as clean, but clears internal Go caches as well."
+	@-echo "  docs      - Produce HTML documentation from generated Terraform Provider "
+	@-echo "              Markdown documentation (via mkdocs)."
+	@-echo "  generate  - Generate any sources needed for builds.
+	@-echo "  get       - Download any build dependencies and cache them."
+	@-echo "  install   - Install the provider into \$$GOBIN so it can be used by Terraform."
+	@-echo "  test      - Run unit, integration, and acceptance tests."
+	@-echo "  vet       - Run any linters."
 
 .PHONY: build
-build:
-	go build ./...
-
-.PHONY: install
-install:
-	go install ocicopy/...
-
-.PHONY: tidy
-tidy:
+build: get vet generate
 	go fmt ./...
 	go mod tidy
-
-.PHONY: docs
-docs:
-	go get github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs
-	go generate
-
-.PHONY: docs-html
-docs-html: docs
-	python3 -m venv .venv
-	.venv/bin/pip install mkdocs-material
-	.venv/bin/mkdocs build
-
-.PHONY: download
-download:
-	go mod download
+	go build ./...
 
 .PHONY: clean
 clean:
-	go clean -i -r -x
-	$(RM) -Rv build/ docs/ site/ .venv/
+	go clean -i
+	$(RM) -R $(GENERATED_DIRS)
+
+.PHONY: deepclean
+deepclean: clean
+	go clean -r -testcache
+	$(RM) -R $(GENERATED_CACHE_DIRS)
+
+.PHONY: docs
+docs: .venv/bin/mkdocs generate
+	.venv/bin/mkdocs build
+
+.PHONY: generate
+generate: get
+	if [[ ! -d docs/ ]]; then mkdir docs/; fi
+	go generate ./...
+
+.PHONY: get
+get:
+	go get -x
+
+.PHONY: install
+install: build
+	go install -x internal/...
 
 .PHONY: test
 test: build
-	TF_ACC=1 TF_LOG=INFO go test -v ./...
+	TF_ACC=1 go test ./...
 
-.PHONY: manualtest
-manualtest:
-	./manualtest/run.sh
+.PHONY: vet
+vet: get
+	go vet ./...
 
-.PHONY: rebuild
-rebuild: clean build
+.venv/bin/mkdocs:
+	python3 -m venv .venv
+	.venv/bin/pip install mkdocs-material

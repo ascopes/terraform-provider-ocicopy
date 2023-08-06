@@ -1,0 +1,18 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    open-pull-requests-limit: 99
+    rebase-strategy: auto
+    schedule:
+      interval: monthly
+    assignees:
+      - ascopes
+  - package-ecosystem: gomod
+    directory: /
+    open-pull-requests-limit: 99
+    rebase-strategy: auto
+    schedule:
+      interval: monthly
+    assignees:
+      - ascopes

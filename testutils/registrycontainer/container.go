@@ -22,6 +22,7 @@ func NewRegistryTestContainer() *RegistryTestContainer {
 	}
 
 	return &RegistryTestContainer{
+		Debug:         false,
 		name:          fmt.Sprintf("registry-%s", uuid.NewString()),
 		containerImpl: nil,
 	}
@@ -29,6 +30,7 @@ func NewRegistryTestContainer() *RegistryTestContainer {
 
 // The registry test container implementation.
 type RegistryTestContainer struct {
+	Debug         bool
 	name          string
 	containerImpl testcontainers.Container
 }
@@ -39,13 +41,30 @@ func (registryContainer *RegistryTestContainer) Start(ctx context.Context) {
 		return
 	}
 
+	var logLevel string
+	if registryContainer.Debug {
+		logLevel = "debug"
+	} else {
+		logLevel = "info"
+	}
+
 	req := testcontainers.ContainerRequest{
 		Name:         registryContainer.name,
 		Image:        "docker.io/library/registry:2",
 		ExposedPorts: []string{"5000"},
 		WaitingFor:   wait.ForListeningPort("5000/tcp"),
 		Env: map[string]string{
+			// Docs: https://docs.docker.com/registry/configuration/
+			
+			// make HTTP auth ignore actual credentials, only check the presence of an
+			// Authorization header.
+			"REGISTRY_AUTH_SILLY_REALM": "testcontainers",
+			"REGISTRY_AUTH_SILLY_SERVICE": registryContainer.name,
+			"REGISTRY_HTTP_HTTP2_DISABLED": "false",
+			"REGISTRY_LOG_ACCESSLOG_ENABLED": "true",
+			"REGISTRY_LOG_LEVEL": logLevel,
 			"REGISTRY_STORAGE_DELETE_ENABLED": "true",
+			"REGISTRY_STORAGE_MAINTENANCE_UPLOADPURGING_ENABLED": "false",
 		},
 	}
 

@@ -61,7 +61,7 @@ func (registryContainer *RegistryTestContainer) Start(ctx context.Context) {
 			"REGISTRY_AUTH_SILLY_REALM": "testcontainers",
 			"REGISTRY_AUTH_SILLY_SERVICE": registryContainer.name,
 			"REGISTRY_HTTP_HTTP2_DISABLED": "false",
-			"REGISTRY_LOG_ACCESSLOG_ENABLED: "true",
+			"REGISTRY_LOG_ACCESSLOG_ENABLED": "true",
 			"REGISTRY_LOG_LEVEL": logLevel,
 			"REGISTRY_STORAGE_DELETE_ENABLED": "true",
 			"REGISTRY_STORAGE_MAINTENANCE_UPLOADPURGING_ENABLED": "false",

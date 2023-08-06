@@ -42,7 +42,7 @@ func (registryContainer *RegistryTestContainer) Start(ctx context.Context) {
 	}
 
 	var logLevel string
-	if registryContainer.debug {
+	if registryContainer.Debug {
 		logLevel = "debug"
 	} else {
 		logLevel = "info"

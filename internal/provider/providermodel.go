@@ -2,10 +2,10 @@ package provider
 
 import (
 	"github.com/ascopes/terraform-provider-ocicopy/internal/durationtype"
-	"github.com/ascopes/terraform-provider-ocicopy/internal/mapping"
 	"github.com/ascopes/terraform-provider-ocicopy/internal/registryapi"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -49,50 +49,49 @@ type registryConfigModel struct {
 func (configModel *registryConfigModel) toRegistryConfig() registryapi.RegistryConfig {
 	config := registryapi.NewRegistryConfig()
 
-	mapping.IfNotNil(
-		configModel.BasicAuth,
-		func(value *basicAuthModel) { config.Authenticator = value.toAuthenticator() },
-	)
-	mapping.IfNotNil(
-		configModel.BearerAuth,
-		func(value *bearerAuthModel) { config.Authenticator = value.toAuthenticator() },
-	)
-	mapping.IfPresent(
-		configModel.ConcurrentJobs,
-		func(value types.Int64) { config.ConcurrentJobs = int(value.ValueInt64()) },
-	)
-	mapping.IfPresent(
-		configModel.ConnectTimeout,
-		func(value durationtype.DurationValue) { config.ConnectTimeout = value.ValueDuration() },
-	)
-	mapping.IfPresent(
-		configModel.ForceAttemptHttp2,
-		func(value types.Bool) { config.ForceAttemptHttp2 = value.ValueBool() },
-	)
-	mapping.IfPresent(
-		configModel.IdleConnectionTimeout,
-		func(value durationtype.DurationValue) { config.IdleConnectionTimeout = value.ValueDuration() },
-	)
-	mapping.IfPresent(
-		configModel.Insecure,
-		func(value types.Bool) { config.Insecure = value.ValueBool() },
-	)
-	mapping.IfPresent(
-		configModel.KeepAlive,
-		func(value durationtype.DurationValue) { config.KeepAlive = value.ValueDuration() },
-	)
-	mapping.IfPresent(
-		configModel.MaxIdleConnections,
-		func(value types.Int64) { config.MaxIdleConnections = int(value.ValueInt64()) },
-	)
-	mapping.IfPresent(
-		configModel.ResponseTimeout,
-		func(value durationtype.DurationValue) { config.ResponseTimeout = value.ValueDuration() },
-	)
-	mapping.IfPresent(
-		configModel.TlsHandshakeTimeout,
-		func(value durationtype.DurationValue) { config.TlsHandshakeTimeout = value.ValueDuration() },
-	)
+	if value := configModel.BasicAuth; value != nil {
+		config.Authenticator = value.toAuthenticator()
+	}
+
+	if value := configModel.BearerAuth; value != nil {
+		config.Authenticator = value.toAuthenticator()
+	}
+
+	if value := configModel.ConcurrentJobs; isDefined(value) {
+		config.ConcurrentJobs = int(value.ValueInt64())
+	}
+
+	if value := configModel.ConnectTimeout; isDefined(value) {
+		config.ConnectTimeout = value.ValueDuration()
+	}
+
+	if value := configModel.ForceAttemptHttp2; isDefined(value) {
+		config.ForceAttemptHttp2 = value.ValueBool()
+	}
+
+	if value := configModel.IdleConnectionTimeout; isDefined(value) {
+		config.IdleConnectionTimeout = value.ValueDuration()
+	}
+
+	if value := configModel.Insecure; isDefined(value) {
+		config.Insecure = value.ValueBool()
+	}
+
+	if value := configModel.KeepAlive; isDefined(value) {
+		config.KeepAlive = value.ValueDuration()
+	}
+
+	if value := configModel.MaxIdleConnections; isDefined(value) {
+		config.MaxIdleConnections = int(value.ValueInt64())
+	}
+
+	if value := configModel.ResponseTimeout; isDefined(value) {
+		config.ResponseTimeout = value.ValueDuration()
+	}
+
+	if value := configModel.TlsHandshakeTimeout; isDefined(value) {
+		config.TlsHandshakeTimeout = value.ValueDuration()
+	}
 
 	return config
 }
@@ -216,4 +215,8 @@ func providerConfigModelSchema() schema.Schema {
 			},
 		},
 	}
+}
+
+func isDefined(value attr.Value) bool {
+	return !value.IsUnknown() && !value.IsNull()
 }

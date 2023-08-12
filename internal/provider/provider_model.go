@@ -1,7 +1,7 @@
 package provider
 
 import (
-	"github.com/ascopes/terraform-provider-ocicopy/internal/durationtype"
+	"github.com/ascopes/terraform-provider-ocicopy/internal/duration_type"
 	"github.com/ascopes/terraform-provider-ocicopy/internal/registry_api"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
@@ -30,18 +30,18 @@ func (configModel *providerModel) getRegistryConfig(registryUrl string) registry
 }
 
 type registryConfigModel struct {
-	BasicAuth             *basicAuthModel            `tfsdk:"basic_auth"`
-	BearerAuth            *bearerAuthModel           `tfsdk:"bearer_auth"`
-	ConcurrentJobs        types.Int64                `tfsdk:"concurrent_jobs"`
-	ConnectTimeout        durationtype.DurationValue `tfsdk:"connect_timeout"`
-	ForceAttemptHttp2     types.Bool                 `tfsdk:"force_attempt_http2"`
-	IdleConnectionTimeout durationtype.DurationValue `tfsdk:"idle_connection_timeout"`
-	Insecure              types.Bool                 `tfsdk:"insecure"`
-	KeepAlive             durationtype.DurationValue `tfsdk:"keep_alive"`
-	MaxIdleConnections    types.Int64                `tfsdk:"max_idle_connections"`
-	ResponseTimeout       durationtype.DurationValue `tfsdk:"response_timeout"`
-	TlsHandshakeTimeout   durationtype.DurationValue `tfsdk:"tls_handshake_timeout"`
-	Url                   types.String               `tfsdk:"url"`
+	BasicAuth             *basicAuthModel             `tfsdk:"basic_auth"`
+	BearerAuth            *bearerAuthModel            `tfsdk:"bearer_auth"`
+	ConcurrentJobs        types.Int64                 `tfsdk:"concurrent_jobs"`
+	ConnectTimeout        duration_type.DurationValue `tfsdk:"connect_timeout"`
+	ForceAttemptHttp2     types.Bool                  `tfsdk:"force_attempt_http2"`
+	IdleConnectionTimeout duration_type.DurationValue `tfsdk:"idle_connection_timeout"`
+	Insecure              types.Bool                  `tfsdk:"insecure"`
+	KeepAlive             duration_type.DurationValue `tfsdk:"keep_alive"`
+	MaxIdleConnections    types.Int64                 `tfsdk:"max_idle_connections"`
+	ResponseTimeout       duration_type.DurationValue `tfsdk:"response_timeout"`
+	TlsHandshakeTimeout   duration_type.DurationValue `tfsdk:"tls_handshake_timeout"`
+	Url                   types.String                `tfsdk:"url"`
 }
 
 // Create a registry_api-compatible registry configuration object from the given
@@ -167,7 +167,7 @@ func providerConfigModelSchema() schema.Schema {
 							},
 						},
 						"connect_timeout": schema.StringAttribute{
-							CustomType:  durationtype.DurationType{},
+							CustomType:  duration_type.DurationType{},
 							Description: "The maximum duration to wait for a HTTP connection to complete before timing out",
 							Optional:    true,
 						},
@@ -176,7 +176,7 @@ func providerConfigModelSchema() schema.Schema {
 							Optional:    true,
 						},
 						"idle_connection_timeout": schema.StringAttribute{
-							CustomType:  durationtype.DurationType{},
+							CustomType:  duration_type.DurationType{},
 							Description: "The maximum duration to allow a HTTP connection to be idle before renewing it",
 							Optional:    true,
 						},
@@ -185,7 +185,7 @@ func providerConfigModelSchema() schema.Schema {
 							Optional:    true,
 						},
 						"keep_alive": schema.StringAttribute{
-							CustomType:  durationtype.DurationType{},
+							CustomType:  duration_type.DurationType{},
 							Description: "The HTTP connection keep-alive timeout",
 							Optional:    true,
 						},
@@ -197,12 +197,12 @@ func providerConfigModelSchema() schema.Schema {
 							},
 						},
 						"response_timeout": schema.StringAttribute{
-							CustomType:  durationtype.DurationType{},
+							CustomType:  duration_type.DurationType{},
 							Description: "The maximum duration to wait for an HTTP response to be received before timing out",
 							Optional:    true,
 						},
 						"tls_handshake_timeout": schema.StringAttribute{
-							CustomType:  durationtype.DurationType{},
+							CustomType:  duration_type.DurationType{},
 							Description: "The maximum duration to wait for a TLS handshake to complete before timing out",
 							Optional:    true,
 						},

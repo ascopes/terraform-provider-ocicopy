@@ -7,17 +7,17 @@ import (
 	"gotest.tools/v3/assert"
 )
 
-func Test_NewHashSet_ReturnsNewHashSet(t *testing.T) {
+func Test_NewMapHashSet_ReturnsNewMapHashSet(t *testing.T) {
 	// When
-	set := NewHashSet[string]()
+	set := NewMapHashSet[string]()
 
 	// Then
 	assert.Equal(t, 0, set.Len())
 }
 
-func Test_HashSet_Add_AddsItemToSetWhenNotPresent(t *testing.T) {
+func Test_MapHashSet_Add_AddsItemToSetWhenNotPresent(t *testing.T) {
 	// Given
-	set := NewHashSet[string]()
+	set := NewMapHashSet[string]()
 	set.Add("foo")
 	set.Add("bar")
 	set.Add("baz")
@@ -29,9 +29,9 @@ func Test_HashSet_Add_AddsItemToSetWhenNotPresent(t *testing.T) {
 	assert.Assert(t, !exists, "Expected set.Add(...) to return false, but returned true")
 }
 
-func Test_HashSet_Add_AddsItemToSetWhenPresent(t *testing.T) {
+func Test_MapHashSet_Add_AddsItemToSetWhenPresent(t *testing.T) {
 	// Given
-	set := NewHashSet[string]()
+	set := NewMapHashSet[string]()
 	set.Add("foo")
 	set.Add("bar")
 	set.Add("baz")
@@ -44,9 +44,9 @@ func Test_HashSet_Add_AddsItemToSetWhenPresent(t *testing.T) {
 	assert.Assert(t, exists, "Expected set.Add(...) to return true, but returned false")
 }
 
-func Test_HashSet_Contains_ReturnsFalseWhenNotPresent(t *testing.T) {
+func Test_MapHashSet_Contains_ReturnsFalseWhenNotPresent(t *testing.T) {
 	// Given
-	set := NewHashSet[string]()
+	set := NewMapHashSet[string]()
 	set.Add("foo")
 	set.Add("bar")
 	set.Add("baz")
@@ -58,9 +58,9 @@ func Test_HashSet_Contains_ReturnsFalseWhenNotPresent(t *testing.T) {
 	assert.Assert(t, !exists, "Expected set.Contains(...) to return false but returned true")
 }
 
-func Test_HashSet_Contains_ReturnsTrueWhenPresent(t *testing.T) {
+func Test_MapHashSet_Contains_ReturnsTrueWhenPresent(t *testing.T) {
 	// Given
-	set := NewHashSet[string]()
+	set := NewMapHashSet[string]()
 	set.Add("foo")
 	set.Add("bar")
 	set.Add("baz")
@@ -73,24 +73,24 @@ func Test_HashSet_Contains_ReturnsTrueWhenPresent(t *testing.T) {
 	assert.Assert(t, exists, "Expected set.Contains(...) to return true but returned false")
 }
 
-func Test_HashSet_GoString_ReturnsInnerMapGoString(t *testing.T) {
+func Test_MapHashSet_GoString_ReturnsInnerMapGoString(t *testing.T) {
 	// Given
-	set := NewHashSet[string]()
+	set := NewMapHashSet[string]()
 	set.Add("foo")
 	set.Add("bar")
 	set.Add("baz")
-	hashSet := set.(*hashSet[string])
+	mapHashSet := set.(*mapHashSet[string])
 
 	// When
 	actualStr := set.GoString()
 
 	// Then
-	assert.Equal(t, fmt.Sprintf("hashSet{data: %#v}", hashSet.data), actualStr)
+	assert.Equal(t, fmt.Sprintf("mapHashSet{data: %#v}", mapHashSet.data), actualStr)
 }
 
-func Test_HashSet_Iterator_YieldsItemsInSet(t *testing.T) {
+func Test_MapHashSet_Iterator_YieldsItemsInSet(t *testing.T) {
 	// Given
-	set := NewHashSet[string]()
+	set := NewMapHashSet[string]()
 	set.Add("foo")
 	set.Add("bar")
 	set.Add("baz")
@@ -119,10 +119,10 @@ func Test_HashSet_Iterator_YieldsItemsInSet(t *testing.T) {
 	}
 }
 
-func Test_HashSet_Len_ReturnsExpectedValue(t *testing.T) {
+func Test_MapHashSet_Len_ReturnsExpectedValue(t *testing.T) {
 	for i := 0; i < 15; i++ {
 		// Given
-		set := NewHashSet[int]()
+		set := NewMapHashSet[int]()
 
 		for j := 0; j < i; j++ {
 			set.Add(j)
@@ -133,9 +133,9 @@ func Test_HashSet_Len_ReturnsExpectedValue(t *testing.T) {
 	}
 }
 
-func Test_HashSet_Remove_ReturnsFalseWhenItemDoesNotExist(t *testing.T) {
+func Test_MapHashSet_Remove_ReturnsFalseWhenItemDoesNotExist(t *testing.T) {
 	// Given
-	set := NewHashSet[string]()
+	set := NewMapHashSet[string]()
 	set.Add("foo")
 	set.Add("bar")
 	set.Add("baz")
@@ -148,9 +148,9 @@ func Test_HashSet_Remove_ReturnsFalseWhenItemDoesNotExist(t *testing.T) {
 	assert.Assert(t, !set.Contains("bork"), "Expected .Contains(\"bork\") to return false but returned true")
 }
 
-func Test_HashSet_Remove_ReturnsTrueWhenItemExists(t *testing.T) {
+func Test_MapHashSet_Remove_ReturnsTrueWhenItemExists(t *testing.T) {
 	// Given
-	set := NewHashSet[string]()
+	set := NewMapHashSet[string]()
 	set.Add("foo")
 	set.Add("bar")
 	set.Add("baz")
@@ -164,9 +164,9 @@ func Test_HashSet_Remove_ReturnsTrueWhenItemExists(t *testing.T) {
 	assert.Assert(t, !set.Contains("bork"), "Expected .Contains(\"bork\") to return false but returned true")
 }
 
-func Test_HashSet_String_ReturnsExpectedValue(t *testing.T) {
+func Test_MapHashSet_String_ReturnsExpectedValue(t *testing.T) {
 	// Given
-	set := NewHashSet[int]()
+	set := NewMapHashSet[int]()
 	set.Add(1366)
 	set.Add(768)
 	set.Add(1266)

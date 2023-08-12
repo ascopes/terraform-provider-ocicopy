@@ -109,7 +109,7 @@ func (client *registryClientImpl) ListTags(ctx context.Context, repositoryName s
 		return nil, err
 	}
 
-	tagSet := set.NewHashSet[string]()
+	tagSet := set.NewMapHashSet[string]()
 	for _, tag := range tagSlice {
 		tagSet.Add(tag)
 	}

@@ -2,7 +2,7 @@ package provider
 
 import (
 	"github.com/ascopes/terraform-provider-ocicopy/internal/durationtype"
-	"github.com/ascopes/terraform-provider-ocicopy/internal/registryapi"
+	"github.com/ascopes/terraform-provider-ocicopy/internal/registry_api"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -17,7 +17,7 @@ type providerModel struct {
 	Registries []registryConfigModel `tfsdk:"registry"`
 }
 
-func (configModel *providerModel) getRegistryConfig(registryUrl string) registryapi.RegistryConfig {
+func (configModel *providerModel) getRegistryConfig(registryUrl string) registry_api.RegistryConfig {
 	for _, registryConfigModel := range configModel.Registries {
 		// TODO: could this become "unknown" prior to apply? How do we deal with that..?
 		if registryConfigModel.Url.ValueString() == registryUrl {
@@ -26,7 +26,7 @@ func (configModel *providerModel) getRegistryConfig(registryUrl string) registry
 	}
 
 	// Return defaults for anything else.
-	return registryapi.NewRegistryConfig()
+	return registry_api.NewRegistryConfig()
 }
 
 type registryConfigModel struct {
@@ -44,10 +44,10 @@ type registryConfigModel struct {
 	Url                   types.String               `tfsdk:"url"`
 }
 
-// Create a registryapi-compatible registry configuration object from the given
+// Create a registry_api-compatible registry configuration object from the given
 // registry config Terraform model.
-func (configModel *registryConfigModel) toRegistryConfig() registryapi.RegistryConfig {
-	config := registryapi.NewRegistryConfig()
+func (configModel *registryConfigModel) toRegistryConfig() registry_api.RegistryConfig {
+	config := registry_api.NewRegistryConfig()
 
 	if value := configModel.BasicAuth; value != nil {
 		config.Authenticator = value.toAuthenticator()
@@ -101,8 +101,8 @@ type basicAuthModel struct {
 	Password types.String `tfsdk:"password"`
 }
 
-func (authModel *basicAuthModel) toAuthenticator() registryapi.Authenticator {
-	return registryapi.NewBasicAuthenticator(
+func (authModel *basicAuthModel) toAuthenticator() registry_api.Authenticator {
+	return registry_api.NewBasicAuthenticator(
 		authModel.Username.ValueString(),
 		authModel.Password.ValueString(),
 	)
@@ -112,8 +112,8 @@ type bearerAuthModel struct {
 	Token types.String `tfsdk:"token"`
 }
 
-func (authModel *bearerAuthModel) toAuthenticator() registryapi.Authenticator {
-	return registryapi.NewBearerAuthenticator(
+func (authModel *bearerAuthModel) toAuthenticator() registry_api.Authenticator {
+	return registry_api.NewBearerAuthenticator(
 		authModel.Token.ValueString(),
 	)
 }

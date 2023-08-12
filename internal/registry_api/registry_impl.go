@@ -1,4 +1,4 @@
-package registryapi
+package registry_api
 
 import (
 	"context"

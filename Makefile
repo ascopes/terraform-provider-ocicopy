@@ -20,12 +20,11 @@ help:
 	@-echo "  get       - Download any build dependencies and cache them."
 	@-echo "  install   - Install the provider into \$$GOBIN so it can be used by Terraform."
 	@-echo "  test      - Run unit, integration, and acceptance tests."
+	@-echo "  tidy      - Run 'go fmt' and 'go mod tidy'."
 	@-echo "  vet       - Run any linters."
 
 .PHONY: build
-build: get vet generate
-	go fmt ./...
-	go mod tidy
+build: tidy get vet generate
 	go build ./...
 
 .PHONY: clean
@@ -58,6 +57,11 @@ install: build
 .PHONY: test
 test: build
 	TF_ACC=1 go test ./...
+
+.PHONY: tidy
+tidy:
+	go fmt ./...
+	go mod tidy
 
 .PHONY: vet
 vet: get

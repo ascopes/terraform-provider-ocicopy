@@ -17,108 +17,7 @@ type providerModel struct {
 	Registries []registryConfigModel `tfsdk:"registry"`
 }
 
-func (configModel *providerModel) getRegistryConfig(registryUrl string) registry_api.RegistryConfig {
-	for _, registryConfigModel := range configModel.Registries {
-		// TODO: could this become "unknown" prior to apply? How do we deal with that..?
-		if registryConfigModel.Url.ValueString() == registryUrl {
-			return registryConfigModel.toRegistryConfig()
-		}
-	}
-
-	// Return defaults for anything else.
-	return registry_api.NewRegistryConfig()
-}
-
-type registryConfigModel struct {
-	BasicAuth             *basicAuthModel             `tfsdk:"basic_auth"`
-	BearerAuth            *bearerAuthModel            `tfsdk:"bearer_auth"`
-	ConcurrentJobs        types.Int64                 `tfsdk:"concurrent_jobs"`
-	ConnectTimeout        duration_type.DurationValue `tfsdk:"connect_timeout"`
-	ForceAttemptHttp2     types.Bool                  `tfsdk:"force_attempt_http2"`
-	IdleConnectionTimeout duration_type.DurationValue `tfsdk:"idle_connection_timeout"`
-	Insecure              types.Bool                  `tfsdk:"insecure"`
-	KeepAlive             duration_type.DurationValue `tfsdk:"keep_alive"`
-	MaxIdleConnections    types.Int64                 `tfsdk:"max_idle_connections"`
-	ResponseTimeout       duration_type.DurationValue `tfsdk:"response_timeout"`
-	TlsHandshakeTimeout   duration_type.DurationValue `tfsdk:"tls_handshake_timeout"`
-	Url                   types.String                `tfsdk:"url"`
-}
-
-// Create a registry_api-compatible registry configuration object from the given
-// registry config Terraform model.
-func (configModel *registryConfigModel) toRegistryConfig() registry_api.RegistryConfig {
-	config := registry_api.NewRegistryConfig()
-
-	if value := configModel.BasicAuth; value != nil {
-		config.Authenticator = value.toAuthenticator()
-	}
-
-	if value := configModel.BearerAuth; value != nil {
-		config.Authenticator = value.toAuthenticator()
-	}
-
-	if value := configModel.ConcurrentJobs; isDefined(value) {
-		config.ConcurrentJobs = int(value.ValueInt64())
-	}
-
-	if value := configModel.ConnectTimeout; isDefined(value) {
-		config.ConnectTimeout = value.ValueDuration()
-	}
-
-	if value := configModel.ForceAttemptHttp2; isDefined(value) {
-		config.ForceAttemptHttp2 = value.ValueBool()
-	}
-
-	if value := configModel.IdleConnectionTimeout; isDefined(value) {
-		config.IdleConnectionTimeout = value.ValueDuration()
-	}
-
-	if value := configModel.Insecure; isDefined(value) {
-		config.Insecure = value.ValueBool()
-	}
-
-	if value := configModel.KeepAlive; isDefined(value) {
-		config.KeepAlive = value.ValueDuration()
-	}
-
-	if value := configModel.MaxIdleConnections; isDefined(value) {
-		config.MaxIdleConnections = int(value.ValueInt64())
-	}
-
-	if value := configModel.ResponseTimeout; isDefined(value) {
-		config.ResponseTimeout = value.ValueDuration()
-	}
-
-	if value := configModel.TlsHandshakeTimeout; isDefined(value) {
-		config.TlsHandshakeTimeout = value.ValueDuration()
-	}
-
-	return config
-}
-
-type basicAuthModel struct {
-	Username types.String `tfsdk:"username"`
-	Password types.String `tfsdk:"password"`
-}
-
-func (authModel *basicAuthModel) toAuthenticator() registry_api.Authenticator {
-	return registry_api.NewBasicAuthenticator(
-		authModel.Username.ValueString(),
-		authModel.Password.ValueString(),
-	)
-}
-
-type bearerAuthModel struct {
-	Token types.String `tfsdk:"token"`
-}
-
-func (authModel *bearerAuthModel) toAuthenticator() registry_api.Authenticator {
-	return registry_api.NewBearerAuthenticator(
-		authModel.Token.ValueString(),
-	)
-}
-
-func providerConfigModelSchema() schema.Schema {
+func (model *providerModel) schema() schema.Schema {
 	return schema.Schema{
 		Description: "Global configuration for image copy operations",
 		Blocks: map[string]schema.Block{
@@ -215,6 +114,107 @@ func providerConfigModelSchema() schema.Schema {
 			},
 		},
 	}
+}
+
+func (model *providerModel) getRegistryConfig(registryUrl string) registry_api.RegistryConfig {
+	for _, registryConfigModel := range model.Registries {
+		// TODO: could this become "unknown" prior to apply? How do we deal with that..?
+		if registryConfigModel.Url.ValueString() == registryUrl {
+			return registryConfigModel.toRegistryConfig()
+		}
+	}
+
+	// Return defaults for anything else.
+	return registry_api.NewRegistryConfig()
+}
+
+type registryConfigModel struct {
+	BasicAuth             *basicAuthModel             `tfsdk:"basic_auth"`
+	BearerAuth            *bearerAuthModel            `tfsdk:"bearer_auth"`
+	ConcurrentJobs        types.Int64                 `tfsdk:"concurrent_jobs"`
+	ConnectTimeout        duration_type.DurationValue `tfsdk:"connect_timeout"`
+	ForceAttemptHttp2     types.Bool                  `tfsdk:"force_attempt_http2"`
+	IdleConnectionTimeout duration_type.DurationValue `tfsdk:"idle_connection_timeout"`
+	Insecure              types.Bool                  `tfsdk:"insecure"`
+	KeepAlive             duration_type.DurationValue `tfsdk:"keep_alive"`
+	MaxIdleConnections    types.Int64                 `tfsdk:"max_idle_connections"`
+	ResponseTimeout       duration_type.DurationValue `tfsdk:"response_timeout"`
+	TlsHandshakeTimeout   duration_type.DurationValue `tfsdk:"tls_handshake_timeout"`
+	Url                   types.String                `tfsdk:"url"`
+}
+
+// Create a registry_api-compatible registry configuration object from the given
+// registry config Terraform model.
+func (model *registryConfigModel) toRegistryConfig() registry_api.RegistryConfig {
+	config := registry_api.NewRegistryConfig()
+
+	if value := model.BasicAuth; value != nil {
+		config.Authenticator = value.toAuthenticator()
+	}
+
+	if value := model.BearerAuth; value != nil {
+		config.Authenticator = value.toAuthenticator()
+	}
+
+	if value := model.ConcurrentJobs; isDefined(value) {
+		config.ConcurrentJobs = int(value.ValueInt64())
+	}
+
+	if value := model.ConnectTimeout; isDefined(value) {
+		config.ConnectTimeout = value.ValueDuration()
+	}
+
+	if value := model.ForceAttemptHttp2; isDefined(value) {
+		config.ForceAttemptHttp2 = value.ValueBool()
+	}
+
+	if value := model.IdleConnectionTimeout; isDefined(value) {
+		config.IdleConnectionTimeout = value.ValueDuration()
+	}
+
+	if value := model.Insecure; isDefined(value) {
+		config.Insecure = value.ValueBool()
+	}
+
+	if value := model.KeepAlive; isDefined(value) {
+		config.KeepAlive = value.ValueDuration()
+	}
+
+	if value := model.MaxIdleConnections; isDefined(value) {
+		config.MaxIdleConnections = int(value.ValueInt64())
+	}
+
+	if value := model.ResponseTimeout; isDefined(value) {
+		config.ResponseTimeout = value.ValueDuration()
+	}
+
+	if value := model.TlsHandshakeTimeout; isDefined(value) {
+		config.TlsHandshakeTimeout = value.ValueDuration()
+	}
+
+	return config
+}
+
+type basicAuthModel struct {
+	Username types.String `tfsdk:"username"`
+	Password types.String `tfsdk:"password"`
+}
+
+func (authModel *basicAuthModel) toAuthenticator() registry_api.Authenticator {
+	return registry_api.NewBasicAuthenticator(
+		authModel.Username.ValueString(),
+		authModel.Password.ValueString(),
+	)
+}
+
+type bearerAuthModel struct {
+	Token types.String `tfsdk:"token"`
+}
+
+func (authModel *bearerAuthModel) toAuthenticator() registry_api.Authenticator {
+	return registry_api.NewBearerAuthenticator(
+		authModel.Token.ValueString(),
+	)
 }
 
 func isDefined(value attr.Value) bool {

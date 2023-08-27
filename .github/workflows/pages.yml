@@ -22,7 +22,7 @@ jobs:
       uses: actions/setup-go@v4
       with:
         check-latest: true
-        go-version: "^1.20.6"
+        go-version: "^1.21.0"
 
     - name: Configure Python
       uses: actions/setup-python@v4

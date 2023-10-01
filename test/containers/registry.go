@@ -11,9 +11,9 @@ import (
 	"github.com/testcontainers/testcontainers-go/wait"
 )
 
-const image = "docker.io/library/registry:2"
-const primaryPort = "5000"
-const primaryPortNat = nat.Port(primaryPort + "/tcp")
+const registryImage = "docker.io/library/registry:2"
+const registryPort = "5000"
+const registryPortNat = nat.Port(registryPort + "/tcp")
 
 // Create a new object that can start a test container for a Docker registry server.
 func NewRegistryTestContainer(t *testing.T) *RegistryTestContainer {
@@ -45,9 +45,9 @@ func (registryContainer *RegistryTestContainer) Start(ctx context.Context) {
 
 	req := testcontainers.ContainerRequest{
 		Name:         registryContainer.name,
-		Image:        image,
-		ExposedPorts: []string{primaryPort},
-		WaitingFor:   wait.ForListeningPort(primaryPortNat),
+		Image:        registryImage,
+		ExposedPorts: []string{registryPort},
+		WaitingFor:   wait.ForListeningPort(registryPortNat),
 		Env: map[string]string{
 			// Docs: https://docs.docker.com/registry/configuration/
 
@@ -94,7 +94,7 @@ func (registryContainer *RegistryTestContainer) Stop(ctx context.Context) {
 }
 
 func (registryContainer *RegistryTestContainer) HostVisibleEndpoint(ctx context.Context) string {
-	port, err := registryContainer.containerImpl.MappedPort(ctx, primaryPortNat)
+	port, err := registryContainer.containerImpl.MappedPort(ctx, registryPortNat)
 	if err != nil {
 		panic(err.Error())
 	}

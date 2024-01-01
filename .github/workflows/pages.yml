@@ -37,7 +37,7 @@ jobs:
       run: make docs
 
     - name: Upload Site
-      uses: actions/upload-pages-artifact@v2
+      uses: actions/upload-pages-artifact@v3
       with:
         path: ./site
     

@@ -3,7 +3,7 @@ module github.com/ascopes/terraform-provider-ocicopy
 go 1.20
 
 require (
-	github.com/google/go-containerregistry v0.17.0
+	github.com/google/go-containerregistry v0.19.0
 	github.com/google/uuid v1.6.0
 	github.com/hashicorp/terraform-plugin-docs v0.16.0
 	github.com/hashicorp/terraform-plugin-framework-validators v0.12.0

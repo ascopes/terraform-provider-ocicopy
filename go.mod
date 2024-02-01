@@ -88,7 +88,7 @@ require (
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
-	github.com/hashicorp/terraform-plugin-framework v1.4.2
+	github.com/hashicorp/terraform-plugin-framework v1.5.0
 	github.com/klauspost/compress v1.16.5 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
